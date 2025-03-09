@@ -1,36 +1,274 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# emr-mern-app-frontend
 
-## Getting Started
+### React/Tailwind frontend for a electronic management records MERN app. With a Node API serving the data.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# 🔑 Key Features & Implementation
+## ✅ 1. Authentication (JWT, NextAuth.js, or Clerk)
+Use NextAuth.js to manage authentication:
+📂 app/layout.tsx
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✅ 2. Role-Based Access Control (RBAC)
+Use middleware.ts to restrict access:
+📂 middleware.ts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## ✅ 3. Fetch & Display Patient Data
+📂 app/patients/page.tsx
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ✅ 4. Real-Time Updates (Using WebSockets or Server Actions)
+For real-time patient updates, Next.js Server Actions are useful.
+📂 app/api/patients/update.ts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## ✅ 5. Appointment Booking & Calendar
+For an appointment system, use a calendar UI like FullCalendar:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+AWS / DigitalOcean	Docker + PostgreSQL for full control
+Firebase	Good for Firestore-backed EMRs
+
+
+
+/emr-app
+│── app/                  # Next.js App Router (Pages & Layouts)
+│   ├── layout.tsx        # Main layout (Navigation, Auth Providers)
+│   ├── page.tsx         # Dashboard/Home
+│   ├── login/page.tsx   # Login Page
+│   ├── patients/        # Patient Management
+│   │   ├── page.tsx     # List Patients
+│   │   ├── [id]/page.tsx # Patient Details
+│   ├── records/         # EMR Records
+│   │   ├── page.tsx     # All Medical Records
+│   │   ├── [id]/page.tsx # Single Record View
+│   ├── appointments/    # Appointments
+│   │   ├── page.tsx     # Appointments Dashboard
+│── components/          # UI Components
+│   ├── Navbar.tsx       # Top Navigation
+│   ├── Sidebar.tsx      # Side Navigation
+│   ├── PatientCard.tsx  # Patient Preview Component
+│── lib/                 # Utility functions & API calls
+│   ├── auth.ts          # Auth logic
+│   ├── db.ts            # Database connections (if using Prisma)
+│── middleware.ts        # Secure routes, role-based auth
+│── prisma/              # Database schema (if using Prisma)
+│── public/              # Static assets
+│── styles/              # Global styles (Tailwind, CSS)
+│── .env                 # Environment variables
+│── next.config.js       # Next.js config
+
+
+
+// app/layout.tsx
+
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/login");
+  }
+
+  return (
+    <div>
+      <Navbar />
+      <Sidebar />
+      {children}
+    </div>
+  );
+}
+
+// lib/auth.ts
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+export const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (credentials.username === "doctor" && credentials.password === "password") {
+          return { id: "1", name: "Dr. John Doe", role: "doctor" };
+        }
+        return null;
+      },
+    }),
+  ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.role = token.role;
+      return session;
+    },
+  },
+};
+
+; middleware.ts
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+export async function middleware(req) {
+  const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/patients/:path*", "/records/:path*"],
+};
+
+// Fetch & Display Patient Data
+// app/patients/page.tsx
+import { fetchPatients } from "@/lib/db";
+
+export default async function PatientsPage() {
+  const patients = await fetchPatients();
+
+  return (
+    <div>
+      <h1>Patients</h1>
+      {patients.map((p) => (
+        <PatientCard key={p.id} patient={p} />
+      ))}
+    </div>
+  );
+}
+// 🔑 Key Features & Implementation
+// ✅ 1. Authentication (JWT, NextAuth.js, or Clerk)
+// Use NextAuth.js to manage authentication:
+
+📂 app/layout.tsx
+
+
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/login");
+  }
+
+  return (
+    <div>
+      <Navbar />
+      <Sidebar />
+      {children}
+    </div>
+  );
+}
+📂 lib/auth.ts
+
+
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+export const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (credentials.username === "doctor" && credentials.password === "password") {
+          return { id: "1", name: "Dr. John Doe", role: "doctor" };
+        }
+        return null;
+      },
+    }),
+  ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.role = token.role;
+      return session;
+    },
+  },
+};
+// ✅ 2. Role-Based Access Control (RBAC)
+// Use middleware.ts to restrict access:
+
+📂 middleware.ts
+
+
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+export async function middleware(req) {
+  const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/patients/:path*", "/records/:path*"],
+};
+// ✅ 3. Fetch & Display Patient Data
+// 📂 app/patients/page.tsx
+
+
+import { fetchPatients } from "@/lib/db";
+
+export default async function PatientsPage() {
+  const patients = await fetchPatients();
+
+  return (
+    <div>
+      <h1>Patients</h1>
+      {patients.map((p) => (
+        <PatientCard key={p.id} patient={p} />
+      ))}
+    </div>
+  );
+}
+📂 lib/db.ts
+
+export async function fetchPatients() {
+  return [
+    { id: 1, name: "Alice Johnson", age: 45, condition: "Diabetes" },
+    { id: 2, name: "Bob Smith", age: 60, condition: "Hypertension" },
+  ];
+}
+// ✅ 4. Real-Time Updates (Using WebSockets or Server Actions)
+// For real-time patient updates, Next.js Server Actions are useful.
+
+📂 app/api/patients/update.ts
+
+
+import { revalidatePath } from "next/cache";
+
+export async function updatePatient(patientId, newData) {
+  await db.patient.update({ where: { id: patientId }, data: newData });
+  revalidatePath("/patients");
+}
+// ✅ 5. Appointment Booking & Calendar
+// For an appointment system, use a calendar UI like FullCalendar:
+
+
+npm install @fullcalendar/react @fullcalendar/daygrid
+📂 components/Calendar.tsx
+
+
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+
+export default function Calendar() {
+  return <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />;
+}
