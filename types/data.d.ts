@@ -9,3 +9,7 @@ export interface SignupPayload {
   password: string;
   password2: string;
 }
+
+export type PayloadT = {
+  [key: string]: any;
+};

@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { LoginPayload } from "@/types/data";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
+import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "@utilities/constants";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { setCookieWithDefaults } from "@/lib/utils";
+import { loginSubmitHandler } from "@/utilities/api";
+import { toast } from "sonner";
 
 const LoginForm = ({
   className,
@@ -25,6 +30,7 @@ const LoginForm = ({
     username: "gichuivictor@gmail.com",
     password: "gichuivictor@gmail.com",
   });
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,6 +41,51 @@ const LoginForm = ({
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e?.preventDefault();
     setIsLoading(true);
+
+    try {
+      const data = await loginSubmitHandler({ ...userDetails });
+      // check if unsuccessful Login
+
+      if (!data?.token) {
+        toast.error("Login Error", {
+          description:
+            data?.error_description || "There was a problem with your request.",
+        });
+
+        setUserDetails((prev) => ({
+          ...prev,
+          username: "",
+          password: "",
+        }));
+      } else {
+        const userData = {
+          [ACCESS_TOKEN]: data?.token,
+          [USER_ID]: data?._id,
+          [EMAIL]: data?.email,
+          [NAME]: data?.name,
+        };
+
+        Object.entries(userData).forEach(([key, value]) =>
+          setCookieWithDefaults(key, value)
+        );
+
+        toast.promise(data, {
+          loading: "Loading...",
+          success: (res: any) => {
+            return "Successfully logged In";
+          },
+          error: "There was a problem with your request.",
+        });
+
+        router.push(`/dashboard`);
+      }
+    } catch (error) {
+      toast.error("Login Error", {
+        description: "An unexpected error occurred. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -85,11 +136,10 @@ const LoginForm = ({
                   </a>
                 </div>
                 <div className="flex items-center rounded-md border border-slate-300 pr-2">
-                <Input
+                  <Input
                     placeholder="Please enter your password"
                     autoComplete="password"
                     className="h-10 border-none"
-
                     data-testid="password"
                     value={userDetails.password}
                     required
