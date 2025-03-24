@@ -28,7 +28,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
-import { chartData } from "@/app/dashboard/chartData"
+import { chartData } from "@/lib/chartData"
 
 export const description = "An interactive area chart"
 

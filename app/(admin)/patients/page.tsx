@@ -1,11 +1,10 @@
-import { ReactElement } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 
 export default function Page() {
-    return (
+  return (
     <>
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
         <div className="space-between flex items-center space-y-2">
@@ -27,4 +26,4 @@ export default function Page() {
       </div>
     </>
   );
-};
+}
