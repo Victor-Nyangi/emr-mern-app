@@ -34,11 +34,13 @@ import { Input } from "../ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filter_key?: string;
 }
 
 export function List<TData, TValue>({
   columns,
   data,
+  filter_key,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -70,14 +72,18 @@ export function List<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter type..."
-          value={(table.getColumn("gender")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("gender")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        {filter_key && (
+          <Input
+            placeholder="Filter type..."
+            value={
+              (table.getColumn(filter_key)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(filter_key)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

@@ -26,5 +26,30 @@ export interface Patient {
   blood_group: string;
   updated_date: string;
   date_created: string;
-  is_active: boolean
+  is_active: boolean;
+}
+
+export interface Billing {
+  _id: string;
+  patient_name: string;
+  service_charged: string;
+  explanation: string;
+  amount: number;
+  updated_date: date;
+}
+
+export interface Department {
+  _id: string;
+  name: string;
+  description: string;
+  updated_date: date;
+}
+
+export interface Drug {
+  _id: string;
+  name: string;
+  description: string;
+  manufacter_date: date;
+  expiry_date: date;
+  updated_date: date;
 }
