@@ -1,9 +1,10 @@
+// 'use client';
 import { LoginPayload, PayloadT } from "@/types/data";
 import { destroyCookie, parseCookies } from "nookies";
 
 import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "./constants";
 import { LOGIN_ENDPOINT, SERVER_URL } from "./endpoints";
-import Router from "next/router";
+// import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 /**
@@ -95,10 +96,7 @@ export const handleApiError = (response: any) => {
  * @returns login response
  */
 
-export const loginSubmitHandler = async ({
-  username,
-  password,
-}: LoginPayload) => {
+export const loginSubmitHandler = async ({ email, password }: LoginPayload) => {
   const response = await fetch(SERVER_URL + LOGIN_ENDPOINT, {
     method: "POST",
     headers: {
@@ -106,7 +104,7 @@ export const loginSubmitHandler = async ({
       accept: "application/json",
     },
     body: JSON.stringify({
-      username: username,
+      email: email,
       password: password,
     }),
   })
@@ -159,6 +157,7 @@ export const signOut = () => {
   [ACCESS_TOKEN, USER_ID, EMAIL, NAME].forEach((cookie) =>
     destroyCookie(null, cookie)
   );
+  // const router = useRouter();
 
-  Router.push("/");
+  // router.push("/");
 };

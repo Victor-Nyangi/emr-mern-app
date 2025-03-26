@@ -2,7 +2,7 @@ import { parseCookies } from "nookies";
 import React, { useEffect } from "react";
 import { ACCESS_TOKEN } from "@/utilities/constants";
 import { useRouter } from "next/navigation";
-import Loader from "../layout/loader";
+import Loader from "../layout/loaders/loader";
 
 interface Props {
   children?: React.ReactNode;

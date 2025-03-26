@@ -27,7 +27,7 @@ const LoginForm = ({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const [userDetails, setUserDetails] = useState<LoginPayload>({
-    username: "gichuivictor@gmail.com",
+    email: "gichuivictor@gmail.com",
     password: "gichuivictor@gmail.com",
   });
   const router = useRouter();
@@ -35,7 +35,7 @@ const LoginForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const isValid = () => {
-    return [userDetails.username, userDetails.password].includes("");
+    return [userDetails.email, userDetails.password].includes("");
   };
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -43,6 +43,7 @@ const LoginForm = ({
     setIsLoading(true);
 
     try {
+      console.log(userDetails, 'userDetails')
       const data = await loginSubmitHandler({ ...userDetails });
       // check if unsuccessful Login
 
@@ -54,7 +55,7 @@ const LoginForm = ({
 
         setUserDetails((prev) => ({
           ...prev,
-          username: "",
+          email: "",
           password: "",
         }));
       } else {
@@ -77,7 +78,7 @@ const LoginForm = ({
           error: "There was a problem with your request.",
         });
 
-        router.push(`/dashboard`);
+        router.push(`/home`);
       }
     } catch (error) {
       toast.error("Login Error", {
@@ -111,16 +112,16 @@ const LoginForm = ({
                 <Label htmlFor="email">Username/Email address</Label>
                 <Input
                   type="email"
-                  placeholder="Please enter your username"
-                  id="username"
-                  autoComplete="username"
-                  value={userDetails.username}
+                  placeholder="Please enter your username/email"
+                  id="email"
+                  autoComplete="email"
+                  value={userDetails.email}
                   required
                   className="h-10"
                   onChange={(e) =>
                     setUserDetails((prev) => ({
                       ...prev,
-                      username: e.target.value,
+                      email: e.target.value,
                     }))
                   }
                 />

@@ -2,8 +2,14 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
+import { PATIENTS_ENDPOINT } from "@/utilities/endpoints";
+import { getData } from "@/utilities/api";
+import { List as PatientList} from "@/components/patients/List";
+import { columns as patientColumns } from "@/components/patients/columns";
 
-export default function Page() {
+export default async function Page() {
+  const patients = await getData(PATIENTS_ENDPOINT);
+
   return (
     <>
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
@@ -23,6 +29,8 @@ export default function Page() {
             </Button>
           </div>
         </div>
+
+        <PatientList columns={patientColumns} data={patients} />
       </div>
     </>
   );

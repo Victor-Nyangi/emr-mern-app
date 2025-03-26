@@ -19,7 +19,6 @@ const SkeletonLoader = () => {
                   />
                 ))}
               </div>
-              {/* CTAs */}
             </div>
           </div>
         </div>
