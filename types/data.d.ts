@@ -25,7 +25,21 @@ export interface Patient {
   date_of_birth: string;
   blood_group: string;
   updated_date: string;
-  date_created: string;
+  is_active: boolean;
+}
+
+export interface Member {
+  _id: string;
+  salutation: string;
+  department: string;
+  first_name: string;
+  last_name: string;
+  address: string;
+  role: stringl;
+  phone_number: string;
+  date_of_birth: string;
+  email: string;
+  updated_date: string;
   is_active: boolean;
 }
 
@@ -51,5 +65,23 @@ export interface Drug {
   description: string;
   manufacter_date: date;
   expiry_date: date;
+  updated_date: date;
+}
+
+export interface Financial {
+  _id: string;
+  patient_name: string;
+  account_name: string;
+  account_number: string;
+  account_type: number;
+  updated_date: date;
+}
+
+export interface Service {
+  _id: string;
+  name: string;
+  description: string;
+  charge: Number;
+  main_purpose: string;
   updated_date: date;
 }
