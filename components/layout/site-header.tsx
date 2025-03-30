@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import ThemeChanger from "./layout/theme-toggle";
-import Profile from "./layout/profile";
+import ThemeChanger from "./theme-toggle";
+import Profile from "./profile";
 
 export function SiteHeader() {
   return (

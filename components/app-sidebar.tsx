@@ -6,23 +6,27 @@ import {
   IconChartBar,
   IconDashboard,
   IconDatabase,
+  IconEyeDollar,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
   IconFolder,
   IconHelp,
+  IconHospitalCircle,
   IconInnerShadowTop,
   IconListDetails,
+  IconMapDollar,
+  IconMedicineSyrup,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavDocuments } from "@/components/layout/nav/nav-documents"
+import { NavMain } from "@/components/layout/nav/nav-main"
+import { NavSecondary } from "@/components/layout/nav/nav-secondary"
+import { NavUser } from "@/components/layout/nav/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -42,28 +46,43 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/home",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Patients",
+      url: "/patients",
+      icon: IconUsers,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
+      title: "Departments",
+      url: "/departments",
       icon: IconFolder,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
+      title: "Drugs",
+      url: "/drugs",
+      icon: IconMedicineSyrup,
+    },
+    {
+      title: "Services",
+      url: "/services",
+      icon: IconChartBar,
+    },
+    {
+      title: "Billing",
+      url: "/billing",
+      icon: IconEyeDollar,
+    },
+    {
+      title: "Financial",
+      url: "/financial",
+      icon: IconMapDollar,
+    },
+    {
+      title: "Members",
+      url: "/members",
+      icon: IconHospitalCircle,
     },
   ],
   navClouds: [

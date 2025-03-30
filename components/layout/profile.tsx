@@ -14,7 +14,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const logout = () => {

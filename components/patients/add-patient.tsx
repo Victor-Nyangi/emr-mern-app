@@ -26,7 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Calendar } from "@components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 
 import {
   Popover,
