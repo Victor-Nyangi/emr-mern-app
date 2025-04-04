@@ -30,6 +30,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import StartVisit from "@/components/visits/start-visit";
 
 // Mock patient data - in a real app, this would come from a database
 const getPatientData = (id: string) => {
@@ -298,6 +299,7 @@ export default async function ContentDetailPage({
                     <MessageSquare className="h-4 w-4 mr-2" />
                     Message
                   </Button>
+                  <StartVisit />
                 </div>
               </CardHeader>
               <CardContent>
