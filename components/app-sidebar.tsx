@@ -14,7 +14,6 @@ import {
   IconHelp,
   IconHospitalCircle,
   IconInnerShadowTop,
-  IconListDetails,
   IconMapDollar,
   IconMedicineSyrup,
   IconReport,
@@ -36,11 +35,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import SetCredits from "./billing/credits"
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin",
+    email: "deez@mailinator.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
