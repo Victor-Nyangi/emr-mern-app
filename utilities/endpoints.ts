@@ -9,6 +9,7 @@ export const PROFILE_ENDPOINT = "/auth/me/";
 export const SERVICES_ENDPOINT = "/services/";
 export const DEPARTMENTS_ENDPOINT = "/departments/";
 export const BILLINGS_ENDPOINT = "/billings/";
+export const QUEUES_ENDPOINT = "/queues/";
 export const VITALS_ENDPOINT = "/vitals/";
 export const DRUGS_ENDPOINT = "/drugs/";
 export const MEMBERS_ENDPOINT = "/members/";

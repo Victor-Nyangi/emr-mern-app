@@ -24,7 +24,7 @@ export interface Patient {
   phone_number: string;
   date_of_birth: string;
   blood_group: string;
-  updated_date: string;
+  updated_date: Date;
   is_active: boolean;
 }
 
@@ -39,7 +39,7 @@ export interface Member {
   phone_number: string;
   date_of_birth: string;
   email: string;
-  updated_date: string;
+  updated_date: Date;
   is_active: boolean;
 }
 
@@ -49,23 +49,37 @@ export interface Billing {
   service_charged: string;
   explanation: string;
   amount: number;
-  updated_date: date;
+  updated_date: Date;
 }
 
 export interface Department {
   _id: string;
   name: string;
   description: string;
-  updated_date: date;
+  updated_date: Date;
+}
+
+export interface Queue {
+  _id: string;
+  departmentId: string;
+  priority: string;
+  status: number;
+  assignedTo: string;
+  name: string;
+  serviceStartTime: Date;
+  serviceStartTime: Date;
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Drug {
   _id: string;
   name: string;
   description: string;
-  manufacter_date: date;
-  expiry_date: date;
-  updated_date: date;
+  manufacter_date: Date;
+  expiry_date: Date;
+  updated_date: Date;
 }
 
 export interface Financial {
@@ -74,7 +88,7 @@ export interface Financial {
   account_name: string;
   account_number: string;
   account_type: number;
-  updated_date: date;
+  updated_date: Date;
 }
 
 export interface Service {
@@ -83,5 +97,5 @@ export interface Service {
   description: string;
   charge: Number;
   main_purpose: string;
-  updated_date: date;
+  updated_date: Date;
 }

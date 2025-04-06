@@ -123,7 +123,7 @@ export default async function ContentDetailPage({
 }) {
   const paramsResponse = await params;
   const patient2 = await getData(`${PATIENTS_ENDPOINT}${paramsResponse?.id}/`);
-  const patient = getPatientData(params.id);
+  const patient = getPatientData(params['id']);
 
   return (
     <>

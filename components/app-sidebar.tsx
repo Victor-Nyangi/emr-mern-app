@@ -7,6 +7,7 @@ import {
   IconDashboard,
   IconDatabase,
   IconEyeDollar,
+  IconFile,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
@@ -65,6 +66,11 @@ const data = {
       icon: IconMedicineSyrup,
     },
     {
+      title: "Queues",
+      url: "/queues",
+      icon: IconFile,
+    },
+    {
       title: "Services",
       url: "/services",
       icon: IconChartBar,
@@ -80,8 +86,8 @@ const data = {
       icon: IconMapDollar,
     },
     {
-      title: "Members",
-      url: "/members",
+      title: "Medical Providers",
+      url: "/medical-providers",
       icon: IconHospitalCircle,
     },
   ],
