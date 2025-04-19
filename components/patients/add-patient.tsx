@@ -10,14 +10,6 @@ import { Control, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -36,12 +28,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PATIENTS_ENDPOINT } from "@/utilities/endpoints";
 import { postData } from "@/utilities/api";
-import {
-  Calendar1Icon,
-  CheckIcon,
-  ChevronDownIcon,
-  Loader2,
-} from "lucide-react";
+import { Calendar1Icon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { toast } from "sonner";
@@ -52,6 +39,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import CustomFormField from "../forms/input";
+import FormSelectPopover from "../forms/select";
 
 interface CustomFormFieldProps {
   control: Control<any>;
@@ -141,40 +130,6 @@ const defaultValues: Partial<patientFormValues> = {
   underlying_conditions: undefined,
 };
 
-// Reusable Input Component
-const CustomFormField: React.FC<CustomFormFieldProps> = ({
-  control,
-  name,
-  label,
-  placeholder,
-  type = "text",
-}) => (
-  <FormField
-    control={control}
-    name={name}
-    render={({ field }) => (
-      <FormItem>
-        <FormLabel>{label}</FormLabel>
-        <FormControl>
-          <Input
-            type={type}
-            placeholder={placeholder}
-            value={field.value ?? ""}
-            onChange={(e) =>
-              field.onChange(
-                type === "number"
-                  ? parseFloat(e.target.value) || 0
-                  : e.target.value
-              )
-            }
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-);
-
 const AddPatient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -247,65 +202,14 @@ const AddPatient = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <FormField
+            <FormSelectPopover
               control={form.control}
               name="gender"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Gender</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value
-                            ? genderChoices.find(
-                                (gender) => gender.value === field.value
-                              )?.label
-                            : "Select status"}
-                          <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0">
-                      <Command>
-                        <CommandInput placeholder="Search status..." />
-                        <CommandList>
-                          <CommandEmpty>Status not found.</CommandEmpty>
-                          <CommandGroup>
-                            {genderChoices.map((gender) => (
-                              <CommandItem
-                                value={gender.value}
-                                key={gender.label}
-                                onSelect={() => {
-                                  form.setValue("gender", gender.value);
-                                }}
-                              >
-                                <CheckIcon
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    gender.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {gender.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Gender"
+              placeholder="Select gender"
+              items={genderChoices}
+              valueKey="value"
+              displayValue={(g) => g?.label}
             />
             <FormField
               control={form.control}

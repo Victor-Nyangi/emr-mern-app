@@ -28,7 +28,7 @@ export interface Patient {
   is_active: boolean;
 }
 
-export interface Member {
+export interface MedicalProvider {
   _id: string;
   salutation: string;
   department: string;
