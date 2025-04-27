@@ -1,18 +1,18 @@
-import { ComponentProps } from "react"
+import { ComponentProps } from "react";
 
-import { cn } from "@/lib/utils"
-import { Badge } from "../ui/badge"
-import { ScrollArea } from "../ui/scroll-area"
-import { Mail } from "@/lib/mail-data"
-import { useMail } from "@/hooks/use-mail"
-import { formatDistanceToNow } from "date-fns"
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
+import { ScrollArea } from "../ui/scroll-area";
+import { Message } from "@/lib/message-data";
+import { useMessage } from "@/hooks/use-message";
+import { formatDistanceToNow } from "date-fns";
 
-interface MailListProps {
-  items: Mail[]
+interface MessageListProps {
+  items: Message[];
 }
 
-export function MailList({ items }: MailListProps) {
-  const [mail, setMail] = useMail()
+export function MessageList({ items }: MessageListProps) {
+  const [message, setMessage] = useMessage();
 
   return (
     <ScrollArea className="h-screen">
@@ -22,11 +22,11 @@ export function MailList({ items }: MailListProps) {
             key={item.id}
             className={cn(
               "flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-              mail.selected === item.id && "bg-muted"
+              message.selected === item.id && "bg-muted"
             )}
             onClick={() =>
-              setMail({
-                ...mail,
+              setMessage({
+                ...message,
                 selected: item.id,
               })
             }
@@ -42,7 +42,7 @@ export function MailList({ items }: MailListProps) {
                 <div
                   className={cn(
                     "ml-auto text-xs",
-                    mail.selected === item.id
+                    message.selected === item.id
                       ? "text-foreground"
                       : "text-muted-foreground"
                   )}
@@ -70,19 +70,19 @@ export function MailList({ items }: MailListProps) {
         ))}
       </div>
     </ScrollArea>
-  )
+  );
 }
 
 function getBadgeVariantFromLabel(
   label: string
 ): ComponentProps<typeof Badge>["variant"] {
   if (["work"].includes(label.toLowerCase())) {
-    return "default"
+    return "default";
   }
 
   if (["personal"].includes(label.toLowerCase())) {
-    return "outline"
+    return "outline";
   }
 
-  return "secondary"
+  return "secondary";
 }

@@ -20,6 +20,7 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
+  IconStethoscope,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -54,6 +55,11 @@ const data = {
       title: "Patients",
       url: "/patients",
       icon: IconUsers,
+    },
+    {
+      title: "Visits",
+      url: "/visits",
+      icon: IconStethoscope,
     },
     {
       title: "Departments",

@@ -26,33 +26,33 @@ import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { TooltipProvider } from "../ui/tooltip";
 import { AccountSwitcher } from "./account-switcher";
-import { MailDisplay } from "./mail-display";
-import { MailList } from "./mail-list";
+import { MessageDisplay } from "./message-display";
+import { MessageList } from "./message-list";
 import { Nav } from "./nav";
-import { useMail } from "@/hooks/use-mail";
-import { type Mail } from "@/lib/mail-data";
+import { useMessage } from "@/hooks/use-message";
+import { type Message } from "@/lib/message-data";
 
-interface MailProps {
+interface MessageProps {
   accounts: {
     label: string;
     email: string;
     icon: React.ReactNode;
   }[];
-  mails: Mail[];
+  messages: Message[];
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
 }
 
-export function Mail({
+export function Message({
   accounts,
-  mails,
+  messages,
   defaultLayout = [20, 32, 48],
   defaultCollapsed = false,
   navCollapsedSize,
-}: MailProps) {
+}: MessageProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [mail] = useMail();
+  const [message] = useMessage();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -185,7 +185,7 @@ export function Mail({
                   value="all"
                   className="text-zinc-600 dark:text-zinc-200"
                 >
-                  All mail
+                  All messages
                 </TabsTrigger>
                 <TabsTrigger
                   value="unread"
@@ -205,17 +205,17 @@ export function Mail({
               </form>
             </div>
             <TabsContent value="all" className="m-0">
-              <MailList items={mails} />
+              <MessageList items={messages} />
             </TabsContent>
             <TabsContent value="unread" className="m-0">
-              <MailList items={mails.filter((item) => !item.read)} />
+              <MessageList items={messages.filter((item) => !item.read)} />
             </TabsContent>
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
-          <MailDisplay
-            mail={mails.find((item) => item.id === mail.selected) || null}
+          <MessageDisplay
+            message={messages.find((item) => item.id === message.selected) || null}
           />
         </ResizablePanel>
       </ResizablePanelGroup>

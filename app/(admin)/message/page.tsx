@@ -1,9 +1,9 @@
-import { Mail } from "@/components/messaging/mail";
-import { accounts, mails } from "@/lib/mail-data";
+import { Message } from "@/components/messaging/message";
+import { accounts, messages } from "@/lib/message-data";
 import { cookies } from "next/headers";
 import Image from "next/image";
 
-export default async function MailPage() {
+export default async function MessagePage() {
   const layout = (await cookies()).get("react-resizable-panels:layout:mail");
   const collapsed = (await cookies()).get("react-resizable-panels:collapsed");
 
@@ -17,21 +17,21 @@ export default async function MailPage() {
           src="/examples/mail-dark.png"
           width={1280}
           height={727}
-          alt="Mail"
+          alt="Message"
           className="hidden dark:block"
         />
         <Image
           src="/examples/mail-light.png"
           width={1280}
           height={727}
-          alt="Mail"
+          alt="Message"
           className="block dark:hidden"
         />
       </div>
       <div className="hidden flex-col md:flex">
-        <Mail
+        <Message
           accounts={accounts}
-          mails={mails}
+          messages={messages}
           defaultLayout={defaultLayout}
           defaultCollapsed={defaultCollapsed}
           navCollapsedSize={4}

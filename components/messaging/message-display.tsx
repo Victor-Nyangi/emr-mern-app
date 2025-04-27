@@ -7,46 +7,28 @@ import {
   Reply,
   ReplyAll,
   Trash2,
-} from "lucide-react"
+} from "lucide-react";
 
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../ui/dropdown-menu"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../ui/avatar"
-import { Button } from "../ui/button"
-import { Calendar } from "../ui/calendar"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
-import { Label } from "../ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover"
-import { Separator } from "../ui/separator"
-import { Switch } from "../ui/switch"
-import { Textarea } from "../ui/textarea"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "../ui/tooltip"
-import { Mail } from "@/lib/mail-data"
-import { addDays, addHours, format, nextSaturday } from "date-fns"
+import { DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Separator } from "../ui/separator";
+import { Switch } from "../ui/switch";
+import { Textarea } from "../ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Message } from "@/lib/message-data";
+import { addDays, addHours, format, nextSaturday } from "date-fns";
 
-interface MailDisplayProps {
-  mail: Mail | null
+interface MessageDisplayProps {
+  message: Message | null;
 }
 
-export function MailDisplay({ mail }: MailDisplayProps) {
-  const today = new Date()
+export function MessageDisplay({ message }: MessageDisplayProps) {
+  const today = new Date();
 
   return (
     <div className="flex h-full flex-col">
@@ -54,7 +36,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <Archive className="h-4 w-4" />
                 <span className="sr-only">Archive</span>
               </Button>
@@ -63,7 +45,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <ArchiveX className="h-4 w-4" />
                 <span className="sr-only">Move to junk</span>
               </Button>
@@ -72,7 +54,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <Trash2 className="h-4 w-4" />
                 <span className="sr-only">Move to trash</span>
               </Button>
@@ -84,7 +66,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             <Popover>
               <PopoverTrigger asChild>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" disabled={!mail}>
+                  <Button variant="ghost" size="icon" disabled={!message}>
                     <Clock className="h-4 w-4" />
                     <span className="sr-only">Snooze</span>
                   </Button>
@@ -143,7 +125,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         <div className="ml-auto flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <Reply className="h-4 w-4" />
                 <span className="sr-only">Reply</span>
               </Button>
@@ -152,7 +134,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <ReplyAll className="h-4 w-4" />
                 <span className="sr-only">Reply all</span>
               </Button>
@@ -161,7 +143,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button variant="ghost" size="icon" disabled={!message}>
                 <Forward className="h-4 w-4" />
                 <span className="sr-only">Forward</span>
               </Button>
@@ -172,7 +154,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         <Separator orientation="vertical" className="mx-2 h-6" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" disabled={!mail}>
+            <Button variant="ghost" size="icon" disabled={!message}>
               <MoreVertical className="h-4 w-4" />
               <span className="sr-only">More</span>
             </Button>
@@ -186,36 +168,36 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         </DropdownMenu>
       </div>
       <Separator />
-      {mail ? (
+      {message ? (
         <div className="flex flex-1 flex-col">
           <div className="flex items-start p-4">
             <div className="flex items-start gap-4 text-sm">
               <Avatar>
-                <AvatarImage alt={mail.name} />
+                <AvatarImage alt={message.name} />
                 <AvatarFallback>
-                  {mail.name
+                  {message.name
                     .split(" ")
                     .map((chunk) => chunk[0])
                     .join("")}
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
-                <div className="font-semibold">{mail.name}</div>
-                <div className="line-clamp-1 text-xs">{mail.subject}</div>
+                <div className="font-semibold">{message.name}</div>
+                <div className="line-clamp-1 text-xs">{message.subject}</div>
                 <div className="line-clamp-1 text-xs">
-                  <span className="font-medium">Reply-To:</span> {mail.email}
+                  <span className="font-medium">Reply-To:</span> {message.email}
                 </div>
               </div>
             </div>
-            {mail.date && (
+            {message.date && (
               <div className="ml-auto text-xs text-muted-foreground">
-                {format(new Date(mail.date), "PPpp")}
+                {format(new Date(message.date), "PPpp")}
               </div>
             )}
           </div>
           <Separator />
           <div className="flex-1 whitespace-pre-wrap p-4 text-sm">
-            {mail.text}
+            {message.text}
           </div>
           <Separator className="mt-auto" />
           <div className="p-4">
@@ -223,7 +205,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
               <div className="grid gap-4">
                 <Textarea
                   className="p-4"
-                  placeholder={`Reply ${mail.name}...`}
+                  placeholder={`Reply ${message.name}...`}
                 />
                 <div className="flex items-center">
                   <Label
@@ -251,5 +233,5 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

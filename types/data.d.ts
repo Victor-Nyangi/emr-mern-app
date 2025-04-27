@@ -28,6 +28,26 @@ export interface Patient {
   is_active: boolean;
 }
 
+export interface Visit {
+  _id: string;
+  patient_id: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  queueId: {
+    _id: string;
+    name: string;
+  };
+  payment_method: string;
+  isFollowUp: boolean;
+  status: string;
+  notes: string;
+  visitDate: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface MedicalProvider {
   _id: string;
   salutation: string;

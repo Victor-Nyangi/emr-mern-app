@@ -32,7 +32,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StartVisit from "@/components/visits/start-visit";
 
-// Mock patient data - in a real app, this would come from a database
 const getPatientData = (id: string) => {
   return {
     id,
