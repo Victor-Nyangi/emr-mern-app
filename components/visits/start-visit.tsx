@@ -5,13 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -29,54 +22,86 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { paymentMethods } from "@/lib/data";
+import { useEffect, useState } from "react";
+import { getData, postData } from "@/utilities/api";
+import { QUEUES_ENDPOINT, VISITS_ENDPOINT } from "@/utilities/endpoints";
+import { Queue } from "@/types/data";
+import FormSelectPopover from "../forms/select";
+import { Loader2 } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
+import { Checkbox } from "../ui/checkbox";
 
-const queues = [
-  "Lab",
-  "Screening",
-  "Procedure",
-  "Triage",
-  "Imaging",
-  "Optical",
-] as const;
+const paymentMethodValues = paymentMethods.map((s) => s.label) as [
+  string,
+  ...string[]
+];
 
-const paymentMethods = [
-  "Cash",
-  "Insurance",
-  "Card",
-  "MobileMoney",
-  "Free",
-] as const;
-
-const FormSchema = z.object({
-  payment_method: z.enum(paymentMethods, {
+const visitFormSchema = z.object({
+  payment_method: z.enum(paymentMethodValues, {
     required_error: "You need to select a payment method.",
   }),
-  queue: z.enum(queues, {
-    errorMap: () => ({ message: "Invalid queue selection" }),
-  }),
+  isFollowUp: z.boolean(),
+  queueId: z.string().nonempty("Please select a queue"),
 });
 
+type visitFormValues = z.infer<typeof visitFormSchema>;
+
+const defaultValues: Partial<visitFormValues> = {
+  payment_method: "",
+  isFollowUp: false,
+  queueId: "",
+};
+
 export default function StartVisit() {
+  const [queues, setQueues] = useState<Queue[]>([]);
+  const [fetchingData, setFetchingData] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
   const params = useParams();
   const patientId = params?.id;
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<visitFormValues>({
+    resolver: zodResolver(visitFormSchema),
+    defaultValues,
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  useEffect(() => {
+    const fetchData = async () => {
+      const queueData = await getData(QUEUES_ENDPOINT);
+      setQueues(queueData || []);
+    };
+    fetchData().then((data) => {
+      setFetchingData(false);
     });
-  }
+  }, []);
+
+  const onSubmit = async (data: visitFormValues) => {
+    const payload = {
+      ...data,
+      patient_id: patientId,
+      status: "ARRIVED",
+    };
+    try {
+      const response = await postData(VISITS_ENDPOINT, payload);
+      if (response?._id) {
+        toast.success("Visit Successfully started");
+      } else {
+        toast.error("Submission Error", {
+          description: "Error in submitting request! Please try again.",
+        });
+      }
+      form.reset();
+    } catch (error) {
+      toast.error("Submission Error", {
+        description: (error as Error)?.message || "An error occurred.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Sheet>
@@ -93,67 +118,56 @@ export default function StartVisit() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 p-4"
           >
-            <FormField
+            <FormSelectPopover
               control={form.control}
               name="payment_method"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Select billing method</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      {paymentMethods.map((method) => (
-                        <FormItem
-                          className="flex items-center space-x-3 space-y-0"
-                          key={method}
-                        >
-                          <FormControl>
-                            <RadioGroupItem value={method} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {method}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Billing Method"
+              placeholder="Select billing method"
+              items={paymentMethods}
+              valueKey="value"
+              displayValue={(p) => p?.label}
             />
+
+            {fetchingData ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              <FormSelectPopover
+                control={form.control}
+                name="queueId"
+                label="Queue"
+                placeholder="Select queue"
+                items={queues}
+                valueKey="_id"
+                displayValue={(d) => d?.name}
+              />
+            )}
+
             <FormField
               control={form.control}
-              name="queue"
+              name="isFollowUp"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Queue</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl className="w-full">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select queue" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {queues.map((queue) => (
-                        <SelectItem key={queue} value={queue}>
-                          {queue}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      id="isFollowUp"
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel htmlFor="isFollowUp">Is this a follow up visit?</FormLabel>
+                  </div>
                 </FormItem>
               )}
             />
             <SheetFooter>
               <SheetClose asChild>
-                <Button type="submit">Start Visit</Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Start Visit
+                </Button>
               </SheetClose>
             </SheetFooter>
           </form>

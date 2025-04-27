@@ -3,16 +3,11 @@ import Link from "next/link";
 
 import { Separator } from "@/components/ui/separator";
 import { getData } from "@/utilities/api";
-import {
-  DEPARTMENTS_ENDPOINT,
-  MEDICAL_PROVIDERS_ENDPOINT,
-} from "@/utilities/endpoints";
-import AddQueue from "@/components/queues/add-queue";
+import { DEPARTMENTS_ENDPOINT } from "@/utilities/endpoints";
+import AddMedicalProvider from "@/components/medical_providers/add-medical-provider";
 
-export default async function NewQueue() {
+export default async function NewMeidcalProvider() {
   const departments = await getData(DEPARTMENTS_ENDPOINT);
-
-  const medicalProviders = await getData(MEDICAL_PROVIDERS_ENDPOINT);
 
   return (
     <>
@@ -20,21 +15,20 @@ export default async function NewQueue() {
         <div className="space-between flex items-center space-y-2">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">
-              Register Queue
+              Register Medical Provider
             </h2>
-            <p className="text-sm text-muted-foreground">Create a new queue</p>
+            <p className="text-sm text-muted-foreground">
+              Add a new medical provider
+            </p>
           </div>
           <div className="ml-auto mr-4">
             <Button asChild>
-              <Link href="/queues">Back</Link>
+              <Link href="/medical_providers">Back</Link>
             </Button>
           </div>
         </div>
         <Separator className="my-4" />
-        <AddQueue
-          departments={departments}
-          medicalProviders={medicalProviders}
-        />
+        <AddMedicalProvider departments={departments} />
       </div>
     </>
   );

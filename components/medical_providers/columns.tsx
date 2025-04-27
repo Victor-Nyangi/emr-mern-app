@@ -1,6 +1,5 @@
 "use client";
 
-import { Member } from "@/types/data";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -17,8 +16,9 @@ import { Checkbox } from "../ui/checkbox";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { formatDateFn } from "@/lib/utils";
+import { MedicalProvider } from "@/types/data";
 
-export const columns: ColumnDef<Member>[] = [
+export const columns: ColumnDef<MedicalProvider>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -45,11 +45,11 @@ export const columns: ColumnDef<Member>[] = [
     accessorKey: "first_name",
     header: "Name",
     cell: ({ row }) => {
-      const member = row.original;
+      const med_provider = row.original;
 
       return (
         <span>
-          {`${member.salutation} ${member.first_name} ${member.last_name}`}
+          {`${med_provider.salutation} ${med_provider.first_name} ${med_provider.last_name}`}
         </span>
       );
     },
@@ -99,7 +99,7 @@ export const columns: ColumnDef<Member>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const member = row.original;
+      const med_provider = row.original;
 
       return (
         <DropdownMenu>
@@ -112,13 +112,15 @@ export const columns: ColumnDef<Member>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(member._id)}
+              onClick={() => navigator.clipboard.writeText(med_provider._id)}
             >
-              Copy member ID
+              Copy medical provider ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/members/${member._id}`}>View member</Link>
+              <Link href={`/medical_providers/${med_provider._id}`}>
+                View Medical Provider
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -5,7 +5,7 @@ import { PlusCircleIcon } from "lucide-react";
 import { MEDICAL_PROVIDERS_ENDPOINT } from "@/utilities/endpoints";
 import { getData } from "@/utilities/api";
 import { List } from "@/components/shared/List";
-import { columns as memberColumns } from "@/components/members/columns";
+import { columns as medProviderColumns } from "@/components/medical_providers/columns";
 
 export default async function Page() {
   const medicalProviders = await getData(MEDICAL_PROVIDERS_ENDPOINT);
@@ -15,7 +15,9 @@ export default async function Page() {
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
         <div className="space-between flex items-center space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Medical providers!</h2>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Medical providers!
+            </h2>
             <p className="text-muted-foreground">
               Here&apos;s a list of medical providers
             </p>
@@ -24,13 +26,17 @@ export default async function Page() {
             <Button asChild>
               <Link href="/medical_providers/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />
-                Add Patient
+                Add Medical Provider
               </Link>
             </Button>
           </div>
         </div>
 
-        <List columns={memberColumns} data={medicalProviders} filter_key="first_name"/>
+        <List
+          columns={medProviderColumns}
+          data={medicalProviders}
+          filter_key="first_name"
+        />
       </div>
     </>
   );

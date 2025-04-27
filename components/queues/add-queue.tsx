@@ -38,14 +38,6 @@ import { Department, MedicalProvider } from "@/types/data";
 import FormSelectPopover from "../forms/select";
 import CustomFormField from "../forms/input";
 
-interface CustomFormFieldProps {
-  control: Control<any>;
-  name: string;
-  label: string;
-  placeholder?: string;
-  type?: "text" | "number" | "email" | "password";
-}
-
 type Props = { medicalProviders: MedicalProvider[]; departments: Department[] };
 
 const statuses = [
