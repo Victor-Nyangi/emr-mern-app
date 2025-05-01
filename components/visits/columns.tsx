@@ -87,7 +87,7 @@ export const columns: ColumnDef<Visit>[] = [
       return (
         <div className="flex space-x-2">
           {
-            <Badge variant={`${status ? "secondary" : "destructive"}`}>
+            <Badge variant={`${status ? "success" : "destructive"}`}>
               {status ? "Active" : "Inactive"}
             </Badge>
           }

@@ -43,7 +43,7 @@ export default async function VisitDetailPage({
   );
   const patient = getVisitData(params["id"]);
   return (
-    <div className="container mx-auto py-6 max-w-7xl">
+    <div className="container mx-auto sm:p-8 p-4">
       <div className="flex flex-col space-y-6">
         <VisitWrapper visitData={patient} />
       </div>
