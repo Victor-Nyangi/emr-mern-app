@@ -1,5 +1,4 @@
 import DrugDetailPage from "@/components/drugs/drug-detail";
-import VisitWrapper from "@/components/visits/wrapper";
 import { DRUGS_ENDPOINT, VISITS_ENDPOINT } from "@/utilities/endpoints";
 
 const getDrugData = (id: string) => {

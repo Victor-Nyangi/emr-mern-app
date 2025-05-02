@@ -23,7 +23,7 @@ export default async function Page() {
               Here&apos;s a list of departments
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/departments/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />
@@ -32,7 +32,7 @@ export default async function Page() {
             </Button>
           </div>
         </div>
-        <div className="*:data-[slot=card]:shadow-xs grid grid-cols-2 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
+        <div className="*:data-[slot=card]:shadow-xs grid grid-cols-2 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card">
           {departments.map((department: Department) => (
             <Card className="@container/card" key={department._id}>
               <CardHeader className="relative">
@@ -53,7 +53,10 @@ export default async function Page() {
                   {department?.description}
                 </div>
                 <div className="text-muted-foreground">
-                  <Link className={buttonVariants({ variant: "outline" })} href={`/departments/${department._id}`}>
+                  <Link
+                    className={buttonVariants({ variant: "outline" })}
+                    href={`/departments/${department._id}`}
+                  >
                     View Department
                   </Link>
                 </div>

@@ -166,7 +166,7 @@ export function ProfileForm() {
                     Add links to your website, blog, or social media profiles.
                   </FormDescription>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} className="mb-2"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

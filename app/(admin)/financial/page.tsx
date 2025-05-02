@@ -20,7 +20,7 @@ export default async function Page() {
               Here&apos;s a list of User Financial Accounts
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/financials/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />

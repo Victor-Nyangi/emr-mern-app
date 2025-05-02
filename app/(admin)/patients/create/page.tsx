@@ -17,7 +17,7 @@ export default function NewPatient() {
               Create a new patient
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/patients">Back</Link>
             </Button>
