@@ -24,7 +24,7 @@ export default async function NewQueue() {
             </h2>
             <p className="text-sm text-muted-foreground">Create a new queue</p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/queues">Back</Link>
             </Button>

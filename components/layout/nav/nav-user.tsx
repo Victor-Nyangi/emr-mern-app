@@ -24,7 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import SetCredits from "@/components/billing/credits";
+import Link from "next/link";
 
 export function NavUser({
   user,
@@ -82,16 +82,24 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <IconUserCircle />
-                Account
+                <Link href="/user/account">
+                  <span className="flex gap-2">
+                    <IconUserCircle />
+                    Account
+                  </span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <IconNotification />
-                Notifications
+                <Link href="/notifications">
+                  <span className="flex gap-2">
+                    <IconNotification />
+                    Notifications
+                  </span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

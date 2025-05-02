@@ -76,7 +76,7 @@ export interface Department {
   _id: string;
   name: string;
   description: string;
-  updated_date: Date;
+  updated_date: string;
 }
 
 export interface Queue {

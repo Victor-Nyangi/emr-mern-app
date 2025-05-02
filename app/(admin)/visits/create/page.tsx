@@ -17,7 +17,7 @@ export default function NewVisit() {
               Start a new visit
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/visits">Back</Link>
             </Button>

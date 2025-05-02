@@ -3,14 +3,6 @@ import { SidebarNav } from "@/components/settings/SidebarNav";
 
 const sidebarSettingsItems = [
   {
-    title: "Profile",
-    href: "/settings",
-  },
-  {
-    title: "Account",
-    href: "/settings/account",
-  },
-  {
     title: "Appearance",
     href: "/settings/appearance",
   },

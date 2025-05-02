@@ -20,7 +20,7 @@ export default async function Page() {
               Here&apos;s a list of drugs
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/departments/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />

@@ -21,7 +21,7 @@ export default async function NewMeidcalProvider() {
               Add a new medical provider
             </p>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="ml-auto">
             <Button asChild>
               <Link href="/medical_providers">Back</Link>
             </Button>

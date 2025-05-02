@@ -1,18 +1,18 @@
 import { Separator } from "@/components/ui/separator";
-import { ProfileForm } from "@/components/settings/profile-form";
+import { AppearanceForm } from "@/components/settings/appearance-form";
 
 export default function Settings() {
   return (
     <>
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium">Profile</h3>
+          <h3 className="text-lg font-medium">Appearance</h3>
           <p className="text-sm text-muted-foreground">
-            This is how others will see you on the site.
+            Customize the application to fit your visual needs
           </p>
         </div>
         <Separator />
-        <ProfileForm />
+        <AppearanceForm />
       </div>
     </>
   );
