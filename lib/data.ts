@@ -119,3 +119,37 @@ export const paymentMethods = [
     value: "Free",
   },
 ];
+
+export const benefitServices = [
+  { label: "Annual Check-up", value: "Annual Checkup" },
+  { label: "Vaccinations", value: "Vaccinations" },
+  { label: "Primary Care Visit", value: "Primary Care Visit" },
+  { label: "Specialist Visit", value: "Specialist Visit" },
+  { label: "Telehealth", value: "Telehealth" },
+  { label: "Inpatient Hospital Stay", value: "Inpatient Hospital Stay" },
+  { label: "Outpatient Surgery", value: "Outpatient Surgery" },
+  { label: "Emergency Room Visit", value: "Emergency Room Visit" },
+  { label: "Urgent Care Visit", value: "Urgent Care Visit" },
+  { label: "Mental Health Therapy", value: "Mental Health Therapy" },
+  { label: "Prescription Drugs", value: "Prescription Drugs" },
+  { label: "Prenatal Care", value: "Prenatal Care" },
+  { label: "Laboratory Tests", value: "Laboratory Tests" },
+  { label: "X-rays", value: "xRays" },
+  { label: "Physical Therapy", value: "Physical Therapy" },
+  { label: "Occupational Therapy", value: "Occupational Therapy" },
+  { label: "Speech Therapy", value: "Speech Therapy" },
+];
+
+export const insurerPanels = [
+  { label: "Tier I", value: "Tier I" },
+  { label: "Tier II", value: "Tier II" },
+  { label: "Tier III", value: "Tier III" },
+  { label: "Tier IV", value: "Tier IV" },
+];
+
+export const coverageTypes = [
+  { label: "Health Maintenance Organization", value: "HMO" },
+  { label: "Preferred Provider Organization", value: "PPO" },
+  { label: "Exclusive Provider Organization", value: "EPO" },
+  { label: "Point-of-service plan", value: "POS" },
+];

@@ -92,7 +92,7 @@ export function DetailPage({
     .substring(0, 2);
 
   return (
-    <div className="container mx-auto p-4 sm:p-8">
+    <div className="container mx-auto">
       <div className="flex flex-col space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

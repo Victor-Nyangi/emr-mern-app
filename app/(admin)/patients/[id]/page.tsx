@@ -9,13 +9,6 @@ import {
   MessageSquare,
   Phone,
   User,
-  CogIcon,
-  DropletOffIcon,
-  HeartPulse,
-  MessageCircleIcon,
-  RadioIcon,
-  TimerIcon,
-  VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -115,7 +108,7 @@ const getPatientData = (id: string) => {
   };
 };
 
-export default async function ContentDetailPage({
+export default async function PatientDetailPage({
   params,
 }: {
   params: { id: string };
