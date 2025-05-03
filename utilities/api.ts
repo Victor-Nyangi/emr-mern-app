@@ -1,10 +1,8 @@
-// 'use client';
 import { LoginPayload, PayloadT } from "@/types/data";
 import { destroyCookie, parseCookies } from "nookies";
 
 import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "./constants";
 import { LOGIN_ENDPOINT, SERVER_URL } from "./endpoints";
-// import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 /**

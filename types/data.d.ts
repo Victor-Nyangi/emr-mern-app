@@ -119,3 +119,45 @@ export interface Service {
   main_purpose: string;
   updated_date: Date;
 }
+
+export interface Insurer {
+  _id: string;
+  name: string;
+  status: string;
+  panel: string;
+  payerId: string;
+  contact: {
+    phone: string;
+    email: string;
+    website: string;
+    address: string;
+  };
+  agent: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BenefitPlan {
+  _id: string;
+  name: string;
+  description: string;
+  insurerId: {
+    _id: string;
+    name: string;
+  };
+  coverageType: string;
+  coverageDetails: Record<string, ReactNode>;
+  costSharing: Record<string, ReactNode>;
+  exclusions: Array<string>;
+  outOfPocketMax: {
+    individual: number;
+    family: number;
+  };
+  coveredServices: Array<string>;
+  createdAt: Date;
+  updatedAt: Date;
+}
