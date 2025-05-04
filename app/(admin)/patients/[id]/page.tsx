@@ -8,30 +8,6 @@ import { columns as policyColumns } from "@/components/insurance/policy/columns"
 import { List } from "@/components/shared/List";
 import PatientBanner from "@/components/patients/patient-banner";
 
-const getPatientData = (_id: string) => {
-  return {
-    _id,
-    salutation: "Mrs",
-    first_name: "Faith",
-    last_name: "Kers",
-    date_of_birth: "May 15, 1985",
-    gender: "Female",
-    phone_number: "(555) 123-4567",
-    address: "123 Main Street, Anytown, CA 94123",
-    email: "sarah.johnson@example.com",
-    emergency_contact: "348923-1",
-    blood_group: "O+",
-    allergies: ["Penicillin", "Peanuts"],
-    underlying_conditions: ["Hypertension", "Asthma"],
-    is_active: true,
-    updated_date: new Date("2022-03-27T19:33:13.679Z"),
-    medications: [
-      { name: "Lisinopril", dosage: "10mg", frequency: "Once daily" },
-      { name: "Albuterol", dosage: "90mcg", frequency: "As needed" },
-    ],
-  };
-};
-
 export default async function PatientDetailPage({
   params,
 }: {
@@ -39,12 +15,10 @@ export default async function PatientDetailPage({
 }) {
   const paramsResponse = await params;
   const patientId = paramsResponse?.id;
-  const patient2 = await getData(`${PATIENTS_ENDPOINT}${patientId}/`);
-  const patient = getPatientData(params["id"]);
-
-  const policies = await getData(`${PATIENTS_ENDPOINT}${patientId}/policies`);
-  console.log(policies, "policies");
-  console.log(patient2, "patient2");
+  const [patient, policies] = await Promise.all([
+    getData(`${PATIENTS_ENDPOINT}${patientId}/`),
+    getData(`${PATIENTS_ENDPOINT}${patientId}/policies`),
+  ]);
 
   return (
     <>

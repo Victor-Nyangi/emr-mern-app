@@ -8,15 +8,27 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "../ui/button";
+import AddVitalForm from "./add-vital";
 
-const Vitals = () => {
+const Vitals = ({
+  visitId,
+  patientId,
+}: {
+  visitId: string;
+  patientId: string;
+}) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Vital Signs</CardTitle>
-        <CardDescription>
-          Patient's vital measurements during this visit
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Vital Signs</CardTitle>
+            <CardDescription>
+              Patient's vital measurements during this visit
+            </CardDescription>
+          </div>
+          <AddVitalForm visitId={visitId} patientId={patientId} />
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

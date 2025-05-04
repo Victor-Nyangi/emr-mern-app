@@ -47,7 +47,7 @@ export default function ResponsiveDialog({
         <DialogTrigger asChild>
           <Button variant="outline">{actionLabel}</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[625px]">
+        <DialogContent className="sm:max-w-[825px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>

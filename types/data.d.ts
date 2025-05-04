@@ -40,10 +40,20 @@ export interface Medication {
 }
 
 export interface Appointment {
-  patient_id: string;
-  medicalProvider_id: string;
+  patient_id: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  medicalProvider_id: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
   status: string;
   type: string;
+  time: string;
   date: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -62,9 +72,6 @@ export interface ClinicalNote {
   updatedAt: Date;
 }
 
-export interface Appointment {}
-
-export interface Appointment {}
 export interface Visit {
   _id: string;
   patient_id: {
@@ -201,7 +208,6 @@ export interface BenefitPlan {
 
 export interface Policy {
   _id: string;
-
   patientId: {
     _id: string;
     first_name: string;
@@ -221,6 +227,26 @@ export interface Policy {
   expiryDate: Date;
   memberId: string;
   isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Vital {
+  _id: string;
+  patientId: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  visit_id: string;
+  body_temperature: string;
+  pulse_rate: string;
+  respiration_rate: string;
+  blood_pressure: string;
+  overall_status: string;
+  weight: number;
+  blood_glucose: string;
+  health_status: string;
   createdAt: Date;
   updatedAt: Date;
 }
