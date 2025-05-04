@@ -23,11 +23,48 @@ export interface Patient {
   address: string;
   phone_number: string;
   date_of_birth: string;
+  email: string;
   blood_group: string;
+  allergies: string[];
+  underlying_conditions: string[];
+  medications: Medication[];
+  emergency_contact: string;
   updated_date: Date;
   is_active: boolean;
 }
 
+export interface Medication {
+  name: string;
+  dosage: string;
+  frequency: string;
+}
+
+export interface Appointment {
+  patient_id: string;
+  medicalProvider_id: string;
+  status: string;
+  type: string;
+  date: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ClinicalNote {
+  patient_id: string;
+  medicalProvider_id: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Appointment {}
+
+export interface Appointment {}
 export interface Visit {
   _id: string;
   patient_id: {
@@ -158,6 +195,32 @@ export interface BenefitPlan {
     family: number;
   };
   coveredServices: Array<string>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Policy {
+  _id: string;
+
+  patientId: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  benefitPlanId: {
+    _id: string;
+    name: string;
+    insurerId: {
+      _id: string;
+      name: string;
+    };
+  };
+  policyNumber: string;
+  coverageType: string;
+  effectiveDate: Date;
+  expiryDate: Date;
+  memberId: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

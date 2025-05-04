@@ -83,16 +83,15 @@ const AddBenefitPlan = ({ insurerId }: Props) => {
       const mappedCoveredServices =
         data?.coveredServices?.map((service) => service.value) ?? [];
 
-      const mappedExclustionServices =
+      const mappedExclusionServices =
         data?.exclusions?.map((service) => service.value) ?? [];
 
       const payload = {
         ...data,
         coveredServices: mappedCoveredServices,
-        exclusions: mappedExclustionServices,
+        exclusions: mappedExclusionServices,
         insurerId: insurerId,
       };
-      console.log(payload, "pauload");
       const response = await postData(BENEFIT_PLAN_ENDPOINT, payload);
       if (response?._id) {
         toast.success("Benefit Plan Successfully created");

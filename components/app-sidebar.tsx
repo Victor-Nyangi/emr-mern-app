@@ -172,6 +172,11 @@ const data = {
       url: "/insurance/benefit-plans",
       icon: IconReport,
     },
+    {
+      name: "Policies",
+      url: "/insurance/policies",
+      icon: IconFileWord,
+    },
   ],
 };
 

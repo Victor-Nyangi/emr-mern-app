@@ -8,25 +8,11 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
+import { Form } from "@/components/ui/form";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postData } from "@/utilities/api";
-import { Calendar1Icon, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 import { format } from "date-fns/format";
 import { toast } from "sonner";
 
@@ -35,6 +21,7 @@ import FormSelectPopover from "../forms/select";
 import { MEDICAL_PROVIDERS_ENDPOINT } from "@/utilities/endpoints";
 import { Department } from "@/types/data";
 import { MedicalProviderRoles } from "@/lib/data";
+import CustomDateField from "../forms/date-picker";
 
 type Props = { departments: Department[] };
 
@@ -147,45 +134,13 @@ const AddMedicalProvider = ({ departments }: Props) => {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <FormField
+            <CustomDateField
               control={form.control}
-              name="date_of_birth"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of Birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <Calendar1Icon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => date > new Date()}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
+              name="date_of_birth."
+              label="Date of Birth"
+              placeholder="Pick a Date"
             />
+            u
             <CustomFormField
               control={form.control}
               name="phone_number"
