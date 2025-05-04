@@ -153,3 +153,21 @@ export const coverageTypes = [
   { label: "Exclusive Provider Organization", value: "EPO" },
   { label: "Point-of-service plan", value: "POS" },
 ];
+
+export const frequencyOptions = [
+  "Once daily",
+  "Twice daily",
+  "Three times daily",
+  "Four times daily",
+  "Every morning",
+  "Every evening",
+  "Every 4 hours",
+  "Every 6 hours",
+  "Every 8 hours",
+  "Every 12 hours",
+  "As needed",
+  "With meals",
+  "Before meals",
+  "After meals",
+  "At bedtime",
+];

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { Control, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -18,17 +18,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PATIENTS_ENDPOINT } from "@/utilities/endpoints";
 import { postData } from "@/utilities/api";
-import { Calendar1Icon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { toast } from "sonner";
@@ -41,14 +35,7 @@ import {
 } from "../ui/select";
 import CustomFormField from "../forms/input";
 import FormSelectPopover from "../forms/select";
-
-interface CustomFormFieldProps {
-  control: Control<any>;
-  name: string;
-  label: string;
-  placeholder?: string;
-  type?: "text" | "number" | "email" | "password";
-}
+import CustomDateField from "../forms/date-picker";
 
 enum Gender {
   male = "MALE",
@@ -97,18 +84,7 @@ const patientFormSchema = z.object({
   blood_group: z.enum(bloodGroups, {
     errorMap: () => ({ message: "Invalid blood group selection" }),
   }),
-  height: z
-    .number({
-      required_error: "Please enter the patient's height in cm.",
-    })
-    .min(1, "Please enter a valid height.")
-    .transform((val) => Number(val) || 0), // Ensure it's a number
-  weight: z
-    .number({
-      required_error: "Please enter the patient's weight in kg",
-    })
-    .min(1, "Please enter a valid weight.")
-    .transform((val) => Number(val) || 0),
+  allergies: z.array(z.object({ value: z.string() })).optional(),
   underlying_conditions: z.array(z.object({ value: z.string() })).optional(),
 });
 
@@ -124,10 +100,9 @@ const defaultValues: Partial<patientFormValues> = {
   date_of_birth: undefined,
   gender: "N/A",
   emergency_contact: "",
-  height: 0,
-  weight: 0,
   blood_group: "N/A",
   underlying_conditions: undefined,
+  allergies: undefined,
 };
 
 const AddPatient = () => {
@@ -139,8 +114,13 @@ const AddPatient = () => {
     defaultValues,
   });
 
-  const { fields, append } = useFieldArray({
+  const underlyingConditions = useFieldArray({
     name: "underlying_conditions",
+    control: form.control,
+  });
+
+  const allergies = useFieldArray({
+    name: "allergies",
     control: form.control,
   });
 
@@ -148,9 +128,13 @@ const AddPatient = () => {
     const mappedConditions =
       data?.underlying_conditions?.map((condition) => condition.value) ?? [];
 
+    const mappedAllergies =
+      data?.allergies?.map((condition) => condition.value) ?? [];
+
     const payload = {
       ...data,
       underlying_conditions: mappedConditions,
+      allergies: mappedAllergies,
       is_active: false,
       date_of_birth: format(
         new Date(data.date_of_birth),
@@ -211,44 +195,11 @@ const AddPatient = () => {
               valueKey="value"
               displayValue={(g) => g?.label}
             />
-            <FormField
+            <CustomDateField
               control={form.control}
-              name="date_of_birth"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of Birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <Calendar1Icon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => date > new Date()}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
+              name="date_of_birth."
+              label="Date of Birth"
+              placeholder="Pick a Date"
             />
             <CustomFormField
               control={form.control}
@@ -323,7 +274,7 @@ const AddPatient = () => {
           </div>
 
           <div>
-            {fields.map((field, index) => (
+            {underlyingConditions.fields.map((field, index) => (
               <FormField
                 control={form.control}
                 key={field.id}
@@ -334,7 +285,7 @@ const AddPatient = () => {
                       Underlying Conditions
                     </FormLabel>
                     <FormDescription className={cn(index !== 0 && "sr-only")}>
-                      Add underlying allergies or conditions if any
+                      Add underlying conditions if any
                     </FormDescription>
                     <FormControl className="w-1/3 mb-2">
                       <Input {...field} />
@@ -349,9 +300,42 @@ const AddPatient = () => {
               variant="outline"
               size="sm"
               className="mt-2"
-              onClick={() => append({ value: "" })}
+              onClick={() => underlyingConditions.append({ value: "" })}
             >
               Add Condition
+            </Button>
+          </div>
+
+          <div>
+            {allergies.fields.map((field, index) => (
+              <FormField
+                control={form.control}
+                key={field.id}
+                name={`allergies.${index}.value`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={cn(index !== 0 && "sr-only")}>
+                      Allergies
+                    </FormLabel>
+                    <FormDescription className={cn(index !== 0 && "sr-only")}>
+                      Add allergies if any
+                    </FormDescription>
+                    <FormControl className="w-1/3 mb-2">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => allergies.append({ value: "" })}
+            >
+              Add Allergy
             </Button>
           </div>
 

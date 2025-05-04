@@ -88,7 +88,7 @@ export default function InsurerDetailSection({
           <div className="space-between flex items-center space-y-2">
             <div>
               <p className="text-muted-foreground">
-                Here&apos;s a list of bnefits
+                Here&apos;s a list of benefits
               </p>
             </div>
             <div className="ml-auto">

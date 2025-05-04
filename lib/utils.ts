@@ -18,3 +18,13 @@ export const setCookieWithDefaults = (name: string, value: string) => {
 export const formatDateFn = (date: string) => {
   return format(date, "LLL dd, y");
 };
+
+export const constructUserName = (user: {
+  salutation: string;
+  first_name: string;
+  last_name: string;
+}) => {
+  return `${user?.salutation ?? ""}. ${user?.first_name ?? ""} ${
+    user?.last_name ?? ""
+  }`.trim();
+};
