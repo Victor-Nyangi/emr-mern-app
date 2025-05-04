@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 
 import {
   CalendarDays,
@@ -24,96 +24,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StartVisit from "@/components/visits/start-visit";
 import AddMedicationForm from "@/components/patients/add-medication";
 import { Button } from "@/components/ui/button";
-import { Appointment, ClinicalNote, Patient } from "@/types/data";
+import { Appointment, ClinicalNote, Patient, Vital } from "@/types/data";
 import AddClinicalNoteForm from "./add-note";
 import { constructUserName } from "@/lib/utils";
 import { getData } from "@/utilities/api";
 import AddAppointmentForm from "./add-appointment";
-import { PATIENTS_ENDPOINT } from "@/utilities/endpoints";
+import { PATIENTS_ENDPOINT, VITALS_ENDPOINT } from "@/utilities/endpoints";
 
-const extraData = {
-  appointments: [
-    {
-      date: "Apr 15, 2025",
-      time: "10:00 AM",
-      medicalProvider_id: {
-        salutation: "Dr",
-        first_name: "Lisa",
-        last_name: "Wong",
-      },
-      type: "Annual Physical",
-      status: "Scheduled",
-    },
-    {
-      date: "Feb 3, 2025",
-      time: "2:30 PM",
-      medicalProvider_id: {
-        salutation: "Dr",
-        first_name: "Michael",
-        last_name: "Chen",
-      },
-      type: "Follow-up",
-      status: "Completed",
-    },
-    {
-      date: "Nov 12, 2024",
-      time: "11:15 AM",
-      medicalProvider_id: {
-        salutation: "Dr",
-        first_name: "Lisa",
-        last_name: "Wong",
-      },
-      type: "Consultation",
-      status: "Completed",
-    },
-  ],
-
-  notes: [
-    {
-      createdAt: "Feb 3, 2025",
-      medicalProvider_id: {
-        salutation: "Dr",
-        first_name: "Lisa",
-        last_name: "Wong",
-      },
-      content:
-        "Patient reports improved breathing with current medication regimen. Continue current treatment plan.",
-    },
-    {
-      createdAt: "Nov 12, 2024",
-      medicalProvider_id: {
-        salutation: "Dr",
-        first_name: "Michael",
-        last_name: "Chen",
-      },
-      content:
-        "Blood pressure slightly elevated. Discussed lifestyle modifications including reduced sodium intake and increased physical activity.",
-    },
-  ],
-  vitals: [
-    {
-      date: "Feb 3, 2025",
-      bp: "128/82",
-      pulse: 72,
-      temp: "98.6°F",
-      weight: "154 lbs",
-    },
-    {
-      date: "Nov 12, 2024",
-      bp: "130/85",
-      pulse: 75,
-      temp: "98.4°F",
-      weight: "156 lbs",
-    },
-    {
-      date: "Aug 5, 2024",
-      bp: "135/88",
-      pulse: 78,
-      temp: "98.7°F",
-      weight: "158 lbs",
-    },
-  ],
-};
 type Props = {
   patient: Patient;
 };
@@ -127,6 +44,9 @@ const PatientBanner = ({ patient }: Props) => {
   // State for the list of notes
   const [notes, setNotes] = useState<ClinicalNote[]>([]);
 
+  // State for the list of patient vitals
+  const [vitals, setVitals] = useState<Vital[]>([]);
+
   const patientAge = formatDistanceToNow(new Date(patient?.date_of_birth), {
     addSuffix: false,
   });
@@ -136,14 +56,14 @@ const PatientBanner = ({ patient }: Props) => {
     const fetchData = async () => {
       setFetchingData(true);
       try {
-        const [appointmentData, notesData] = await Promise.all([
+        const [appointmentData, notesData, vitalsData] = await Promise.all([
           getData(`${PATIENTS_ENDPOINT}${patientId}/appointments`),
           getData(`${PATIENTS_ENDPOINT}${patientId}/clinical-notes`),
+          getData(`${VITALS_ENDPOINT}patient/${patientId}`),
         ]);
         setAppointments(appointmentData || []);
         setNotes(notesData || []);
-        console.log(appointmentData, "appointments");
-        console.log(notesData, "notes");
+        setVitals(vitalsData || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         // Optionally set an error state here
@@ -300,26 +220,28 @@ const PatientBanner = ({ patient }: Props) => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium">
-                        {extraData.appointments[0].type}
-                      </h4>
-                      <Badge>{extraData.appointments[0].status}</Badge>
+                  {appointments.length ? (
+                    <div className="bg-muted/50 p-4 rounded-lg">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium">{appointments[0].type}</h4>
+                        <Badge>{appointments[0].status}</Badge>
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground mb-2">
+                        <CalendarDays className="h-4 w-4 mr-2" />
+                        {format(appointments[0].date, "PPP")}
+                        <Clock className="h-4 w-4 ml-4 mr-2" />
+                        {appointments[0].time}
+                      </div>
+                      <div className="flex items-center text-sm">
+                        <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                        {constructUserName(appointments[0].medicalProvider_id)}
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <CalendarDays className="h-4 w-4 mr-2" />
-                      {extraData.appointments[0].date}
-                      <Clock className="h-4 w-4 ml-4 mr-2" />
-                      {extraData.appointments[0].time}
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No appointments scheduled.
                     </div>
-                    <div className="flex items-center text-sm">
-                      <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                      {constructUserName(
-                        extraData.appointments[0].medicalProvider_id
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -333,34 +255,40 @@ const PatientBanner = ({ patient }: Props) => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="divide-y">
-                    {extraData.appointments.map((appointment, index) => (
-                      <div key={index} className="py-4 first:pt-0">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium">{appointment.type}</h4>
-                          <Badge
-                            variant={
-                              appointment.status === "Completed"
-                                ? "secondary"
-                                : "default"
-                            }
-                          >
-                            {appointment.status}
-                          </Badge>
+                  {appointments.length ? (
+                    <div className="divide-y">
+                      {appointments.map((appointment, index) => (
+                        <div key={index} className="py-4 first:pt-0">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-medium">{appointment.type}</h4>
+                            <Badge
+                              variant={
+                                appointment.status === "Completed"
+                                  ? "secondary"
+                                  : "default"
+                              }
+                            >
+                              {appointment.status}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center text-sm text-muted-foreground mb-2">
+                            <CalendarDays className="h-4 w-4 mr-2" />
+                            {format(appointment.date, "PPP")}
+                            <Clock className="h-4 w-4 ml-4 mr-2" />
+                            {appointment.time}
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                            {constructUserName(appointment.medicalProvider_id)}
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm text-muted-foreground mb-2">
-                          <CalendarDays className="h-4 w-4 mr-2" />
-                          {appointment.date}
-                          <Clock className="h-4 w-4 ml-4 mr-2" />
-                          {appointment.time}
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <User className="h-4 w-4 mr-2 text-muted-foreground" />
-                          {constructUserName(appointment.medicalProvider_id)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No appointments scheduled.
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -371,34 +299,56 @@ const PatientBanner = ({ patient }: Props) => {
                   <CardTitle>Vital Signs History</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2 font-medium">Date</th>
-                          <th className="text-left py-2 font-medium">
-                            Blood Pressure
-                          </th>
-                          <th className="text-left py-2 font-medium">Pulse</th>
-                          <th className="text-left py-2 font-medium">
-                            Temperature
-                          </th>
-                          <th className="text-left py-2 font-medium">Weight</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {extraData.vitals.map((vital, index) => (
-                          <tr key={index} className="border-b last:border-0">
-                            <td className="py-3">{vital.date}</td>
-                            <td className="py-3">{vital.bp}</td>
-                            <td className="py-3">{vital.pulse} bpm</td>
-                            <td className="py-3">{vital.temp}</td>
-                            <td className="py-3">{vital.weight}</td>
+                  {vitals?.length ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-left py-2 font-medium">Date</th>
+                            <th className="text-left py-2 font-medium">
+                              Blood Pressure
+                            </th>
+                            <th className="text-left py-2 font-medium">
+                              Pulse Rate
+                            </th>
+                            <th className="text-left py-2 font-medium">
+                              Body Temperature
+                            </th>
+                            <th className="text-left py-2 font-medium">
+                              Weight
+                            </th>
+                            <th className="text-left py-2 font-medium">
+                              Status
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {vitals.map((vital, index) => (
+                            <tr key={index} className="border-b last:border-0">
+                              <td className="py-3">
+                                {format(vital.createdAt, "PPP")}
+                              </td>
+                              <td className="py-3">
+                                {vital.blood_pressure} mmHg
+                              </td>
+                              <td className="py-3">{vital.pulse_rate} bpm</td>
+                              <td className="py-3">
+                                {vital.body_temperature}°C
+                              </td>
+                              <td className="py-3">{vital.weight} lbs</td>
+                              <td className="py-3">
+                                {vital.health_status} lbs
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No vitals recorded.
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -412,28 +362,34 @@ const PatientBanner = ({ patient }: Props) => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="divide-y">
-                    {extraData.notes.map(
-                      ({ medicalProvider_id, createdAt, content }, index) => (
-                        <div key={index} className="py-4 first:pt-0">
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="flex items-center">
-                              <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span className="font-medium">
-                                {constructUserName(medicalProvider_id)}
+                  {notes?.length ? (
+                    <div className="divide-y">
+                      {notes.map(
+                        ({ medicalProvider_id, createdAt, content }, index) => (
+                          <div key={index} className="py-4 first:pt-0">
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="flex items-center">
+                                <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+                                <span className="font-medium">
+                                  {constructUserName(medicalProvider_id)}
+                                </span>
+                              </div>
+                              <span className="text-sm text-muted-foreground">
+                                <time>
+                                  {new Date(createdAt).toLocaleDateString()}
+                                </time>
                               </span>
                             </div>
-                            <span className="text-sm text-muted-foreground">
-                              <time>
-                                {new Date(createdAt).toLocaleDateString()}
-                              </time>
-                            </span>
+                            <p className="text-sm mt-2">{content}</p>
                           </div>
-                          <p className="text-sm mt-2">{content}</p>
-                        </div>
-                      )
-                    )}
-                  </div>
+                        )
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground">
+                      No clinical notes recorded.
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
