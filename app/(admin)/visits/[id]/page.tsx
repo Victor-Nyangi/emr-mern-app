@@ -9,6 +9,7 @@ export default async function VisitDetailPage({
 }) {
   const paramsResponse = await params;
   const visit = await getData(`${VISITS_ENDPOINT}${paramsResponse?.id}/`);
+
   return (
     <div className="container mx-auto sm:p-8 p-4">
       <div className="flex flex-col space-y-6">
