@@ -93,7 +93,7 @@ const AddMedicalProvider = ({ departments }: Props) => {
       const response = await postData(MEDICAL_PROVIDERS_ENDPOINT, payload);
       if (response?._id) {
         toast.success("Medical Provider Successfully registered");
-        router.push("/medical_providers");
+        router.push("/medical-providers");
       } else {
         toast.error("Submission Error", {
           description: "Error in submitting request! Please try again.",
@@ -140,7 +140,7 @@ const AddMedicalProvider = ({ departments }: Props) => {
               label="Date of Birth"
               placeholder="Pick a Date"
             />
-            u
+            
             <CustomFormField
               control={form.control}
               name="phone_number"

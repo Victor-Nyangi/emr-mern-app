@@ -42,6 +42,7 @@ type Props = {
 };
 
 const VisitBanner = ({ patient, visit }: Props) => {
+  console.log("Visit Banner Props:", { patient, visit });
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
   return (
@@ -70,7 +71,7 @@ const VisitBanner = ({ patient, visit }: Props) => {
               <div>
                 <h1 className="text-2xl font-bold">{patient.name}</h1>
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <span>ID: {visit.id}</span>
+                  <span>ID: {visit._id}</span>
                   <span>•</span>
                   <Badge
                     variant={
@@ -140,14 +141,14 @@ const VisitBanner = ({ patient, visit }: Props) => {
 
                   <div>
                     <div className="text-muted-foreground">
-                      {patient.age} / {patient.gender} | ID: {patient.id}
+                      {patient.age} / {patient.gender} | ID: {patient._id}
                     </div>
                   </div>
                 </div>
 
                 <Button variant="outline" size="sm" asChild>
                   <Link
-                    href={`/patients/${patient.id}`}
+                    href={`/patients/${patient._id}`}
                     className="flex items-center gap-2"
                   >
                     View Complete Profile

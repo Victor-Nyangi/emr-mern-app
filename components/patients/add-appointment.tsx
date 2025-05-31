@@ -133,7 +133,7 @@ const AddAppointmentForm = ({ patientId }: { patientId: String }) => {
 
               <CustomDateField
                 control={form.control}
-                name="date."
+                name="date"
                 label="Appointment Date"
                 placeholder="Pick a Date"
               />

@@ -17,70 +17,95 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import AddDiagnosisForm from "./add-diagnosis";
+import { useEffect, useState } from "react";
+import { Diagnosis as DiagnosisType } from "@/types/data";
+import { DIAGNOSIS_ENDPOINT } from "@/utilities/endpoints";
+import { getData } from "@/utilities/api";
+import { format } from "date-fns";
 
 type Props = {
-  visit_date: string;
+  visitId: string;
 };
-const Diagnosis = ({ visit_date }: Props) => {
+const Diagnosis = ({ visitId }: Props) => {
+  const [diagnoses, setDiagnoses] = useState<DiagnosisType[] | undefined>(
+    undefined
+  );
+  const [fetchingData, setFetchingData] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setFetchingData(true);
+      try {
+        const data = await getData(`${DIAGNOSIS_ENDPOINT}visit/${visitId}`);
+        setDiagnoses(data);
+        console.log("Fetched diagnoses:", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setFetchingData(false);
+      }
+    };
+
+    fetchData();
+  }, [visitId]);
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Diagnosis</CardTitle>
-        <CardDescription>
-          Conditions diagnosed during this visit
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Diagnosis</CardTitle>
+            <CardDescription className="mt-2">
+              Conditions diagnosed during this visit
+            </CardDescription>
+          </div>
+          <AddDiagnosisForm visitId={visitId} />
+        </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Diagnosis</TableHead>
-              <TableHead>Code</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">
-                Essential Hypertension
-              </TableCell>
-              <TableCell>I10</TableCell>
-              <TableCell>Primary</TableCell>
-              <TableCell>{visit_date}</TableCell>
-              <TableCell>
-                <Badge>Active</Badge>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">
-                Type 2 Diabetes Mellitus
-              </TableCell>
-              <TableCell>E11.9</TableCell>
-              <TableCell>Secondary</TableCell>
-              <TableCell>March 15, 2025</TableCell>
-              <TableCell>
-                <Badge>Active</Badge>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">Hyperlipidemia</TableCell>
-              <TableCell>E78.5</TableCell>
-              <TableCell>Secondary</TableCell>
-              <TableCell>January 10, 2025</TableCell>
-              <TableCell>
-                <Badge>Active</Badge>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        {diagnoses && diagnoses.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Diagnosis</TableHead>
+                <TableHead>Code</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {diagnoses.map((diagnosis, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">
+                    {diagnosis?.diagnosis || ""}
+                  </TableCell>
+                  <TableCell> {diagnosis?.code || ""}</TableCell>
+                  <TableCell> {diagnosis?.type || ""}</TableCell>
+                  <TableCell> {format(diagnosis?.date, "yyyy-MM-dd") || ""}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={`${
+                        diagnosis?.status === "Active" ? "success" : "secondary"
+                      }`}
+                    >
+                      {diagnosis?.status || ""}
+                    </Badge>{" "}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center py-4 text-muted-foreground">
+            No diagnoses recorded.
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" size="sm">
           View History
         </Button>
-        <Button size="sm">Add Diagnosis</Button>
       </CardFooter>
     </Card>
   );
