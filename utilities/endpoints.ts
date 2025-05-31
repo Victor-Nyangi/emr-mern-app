@@ -24,5 +24,11 @@ export const BENEFIT_PLAN_ENDPOINT = "/insurance/benefit-plans/";
 
 export const CLINICAL_NOTES_ENDPOINT = "/clinical-notes/";
 export const APPOINTMENTS_ENDPOINT = "/appointments/";
+export const DIAGNOSIS_ENDPOINT = "/diagnosis/";
+export const TESTS_ENDPOINT = "/tests/";
+export const MEDICATIONS_ENDPOINT = "/medications/";
+export const VISIT_CLINICAL_NOTES_ENDPOINT = "/visit-clinical-notes/";
+
+
 
 

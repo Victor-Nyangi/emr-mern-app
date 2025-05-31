@@ -75,10 +75,6 @@ const VisitWrapper = ({ visit }: Props) => {
             <Flask className="h-4 w-4" />
             <span className="hidden md:inline">Tests</span>
           </TabsTrigger>
-          <TabsTrigger value="invoices" className="flex items-center gap-2">
-            <Receipt className="h-4 w-4" />
-            <span className="hidden md:inline">Invoices</span>
-          </TabsTrigger>
           <TabsTrigger value="treatment" className="flex items-center gap-2">
             <Clipboard className="h-4 w-4" />
             <span className="hidden md:inline">Treatment</span>
@@ -91,6 +87,10 @@ const VisitWrapper = ({ visit }: Props) => {
             <FileText className="h-4 w-4" />
             <span className="hidden md:inline">Notes</span>
           </TabsTrigger>
+          <TabsTrigger value="invoices" className="flex items-center gap-2">
+            <Receipt className="h-4 w-4" />
+            <span className="hidden md:inline">Invoices</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Vitals Tab */}
@@ -100,17 +100,12 @@ const VisitWrapper = ({ visit }: Props) => {
 
         {/* Diagnosis Tab */}
         <TabsContent value="diagnosis">
-          <Diagnosis visit_date={mockVisit?.date} />
+          <Diagnosis visitId={visit?._id} />
         </TabsContent>
 
         {/* Tests Tab */}
         <TabsContent value="tests">
-          <Tests visit={mockVisit} />
-        </TabsContent>
-
-        {/* Invoices Tab */}
-        <TabsContent value="invoices">
-          <Invoices visit={mockVisit} />
+          <Tests visitId={visit?._id} />
         </TabsContent>
 
         {/* Treatment Tab */}
@@ -120,12 +115,17 @@ const VisitWrapper = ({ visit }: Props) => {
 
         {/* Medication Tab */}
         <TabsContent value="medication">
-          <Medications visit={mockVisit} />
+          <Medications visitId={visit?._id} patientId={visit?.patient_id?._id} />
         </TabsContent>
 
         {/* Notes Tab */}
         <TabsContent value="notes">
-          <Notes visit={mockVisit} />
+          <Notes  visitId={visit?._id} />
+        </TabsContent>
+
+        {/* Invoices Tab */}
+        <TabsContent value="invoices">
+          <Invoices visit={mockVisit} />
         </TabsContent>
       </Tabs>
     </section>

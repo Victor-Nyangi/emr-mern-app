@@ -250,3 +250,76 @@ export interface Vital {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Diagnosis {
+  _id: string;
+  medicalProvider_id: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  visit_id: string;
+  diagnosis: string;
+  code: string;
+  type: string;
+  date: string;
+  status: string;
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Test {
+  _id: string;
+  ordered_by: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  visit_id: string;
+  testName: string;
+  result: string;
+  dateOrdered: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface VisitMedication {
+  _id: string;
+  medication: string;
+  dosage: string;
+  frequency: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  duration: string;
+  prescribedBy: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  patientId: string;
+  visitId: string;
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface VisitClinicalNote {
+  visit_id: string;
+  medicalProvider_id: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  assessment: string[];
+  plan: string[];
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
