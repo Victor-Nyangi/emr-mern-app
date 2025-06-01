@@ -323,3 +323,36 @@ export interface VisitClinicalNote {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Treatment {
+  visitId: string;
+  name: string;
+  type: "Procedure" | "Periodic" | "Wholesome" | "Other";
+  startDate: Date;
+  endDate: Date;
+  medicalProvider_id: {
+    first_name: string;
+    last_name: string;
+    salutation: string;
+    _id: string;
+  };
+  status: "Scheduled" | "Ongoing" | "Completed" | "Cancelled";
+  notes?: string;
+  isRecommended: boolean;
+  progress: number;
+  priority: "Low" | "Medium" | "High" | "Urgent";
+}
+
+export interface Invoice {
+  visitId: string;
+  services_charged?: string[];
+  description?: string[];
+  payment_mode?: ("COPAY" | "INSURANCE" | "SELF")[];
+  amount: number;
+  copayAmount: number;
+  status?: "PAID" | "UNPAID" | "PENDING INSURANCE REVIEW";
+  invoiceNumber: string;
+  notes?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

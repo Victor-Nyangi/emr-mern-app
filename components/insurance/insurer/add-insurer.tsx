@@ -81,7 +81,6 @@ const AddInsurer = () => {
 
   const onSubmit = async (data: insurerFormValues) => {
     try {
-      console.log(data, "data");
       const response = await postData(INSURERS_ENDPOINT, data);
       if (response?._id) {
         toast.success("Insurer Successfully registered");

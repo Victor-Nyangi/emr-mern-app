@@ -110,17 +110,20 @@ const VisitWrapper = ({ visit }: Props) => {
 
         {/* Treatment Tab */}
         <TabsContent value="treatment">
-          <Treatment visit={mockVisit} />
+          <Treatment visitId={visit?._id} />
         </TabsContent>
 
         {/* Medication Tab */}
         <TabsContent value="medication">
-          <Medications visitId={visit?._id} patientId={visit?.patient_id?._id} />
+          <Medications
+            visitId={visit?._id}
+            patientId={visit?.patient_id?._id}
+          />
         </TabsContent>
 
         {/* Notes Tab */}
         <TabsContent value="notes">
-          <Notes  visitId={visit?._id} />
+          <Notes visitId={visit?._id} />
         </TabsContent>
 
         {/* Invoices Tab */}
