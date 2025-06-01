@@ -20,11 +20,40 @@ import {
 } from "../ui/table";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircle } from "lucide-react";
+import { VISIT_INVOICE_ENDPOINT } from "@/utilities/endpoints";
+import { getData } from "@/utilities/api";
+import { useEffect, useState } from "react";
+import { Invoice as InvoiceType } from "@/types/data";
 
 type Props = {
-  visit: any;
+  visitId: string;
 };
-const Invoices = ({ visit }: Props) => {
+const Invoices = ({ visitId }: Props) => {
+  const [invoicesObj, setInvoices] = useState<
+    | {
+        invoices: InvoiceType[] | undefined;
+        totals: { totalAmount: number; totalCopay: number } | undefined;
+      }
+    | undefined
+  >(undefined);
+  const [fetchingData, setFetchingData] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setFetchingData(true);
+      try {
+        const data = await getData(`${VISIT_INVOICE_ENDPOINT}visit/${visitId}`);
+        setInvoices(data);
+        console.log("Fetched invoices:", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setFetchingData(false);
+      }
+    };
+
+    fetchData();
+  }, [visitId]);
   return (
     <Card>
       <CardHeader>
@@ -53,7 +82,7 @@ const Invoices = ({ visit }: Props) => {
           <TableBody>
             <TableRow>
               <TableCell className="font-medium">INV-001</TableCell>
-              <TableCell>{visit.date}</TableCell>
+              {/* <TableCell>{visit.date}</TableCell> */}
               <TableCell>Office Visit - Cardiology</TableCell>
               <TableCell>$150.00</TableCell>
               <TableCell>
@@ -62,7 +91,7 @@ const Invoices = ({ visit }: Props) => {
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">INV-002</TableCell>
-              <TableCell>{visit.date}</TableCell>
+              {/* <TableCell>{visit.date}</TableCell> */}
               <TableCell>Laboratory Tests</TableCell>
               <TableCell>$225.00</TableCell>
               <TableCell>
@@ -71,7 +100,7 @@ const Invoices = ({ visit }: Props) => {
             </TableRow>
             <TableRow>
               <TableCell className="font-medium">INV-003</TableCell>
-              <TableCell>{visit.date}</TableCell>
+              {/* <TableCell>{visit.date}</TableCell> */}
               <TableCell>Patient Copay</TableCell>
               <TableCell>$75.00</TableCell>
               <TableCell>

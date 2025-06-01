@@ -28,7 +28,5 @@ export const DIAGNOSIS_ENDPOINT = "/diagnosis/";
 export const TESTS_ENDPOINT = "/tests/";
 export const MEDICATIONS_ENDPOINT = "/medications/";
 export const VISIT_CLINICAL_NOTES_ENDPOINT = "/visit-clinical-notes/";
-
-
-
-
+export const VISIT_TREATMENT_ENDPOINT = "/visit-treatments/";
+export const VISIT_INVOICE_ENDPOINT = "/visit-invoices/";
