@@ -128,7 +128,7 @@ const VisitWrapper = ({ visit }: Props) => {
 
         {/* Invoices Tab */}
         <TabsContent value="invoices">
-          <Invoices visit={mockVisit} />
+          <Invoices visitId={visit?._id} />
         </TabsContent>
       </Tabs>
     </section>

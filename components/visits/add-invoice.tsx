@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,34 +18,21 @@ import {
 
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-import {
-  VISIT_INVOICE_ENDPOINT,
-  MEDICAL_PROVIDERS_ENDPOINT,
-} from "@/utilities/endpoints";
-import { getData, postData } from "@/utilities/api";
+import { VISIT_INVOICE_ENDPOINT } from "@/utilities/endpoints";
+import { postData } from "@/utilities/api";
 import ResponsiveDialog from "../shared/ResponsiveDrawer";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import CustomFormField from "../forms/input";
-import CustomDateField from "../forms/date-picker";
 import FormSelectPopover from "../forms/select";
-import { Skeleton } from "../ui/skeleton";
-import { MedicalProvider } from "@/types/data";
-import { constructUserName } from "@/lib/utils";
 import { Textarea } from "../ui/textarea";
-import { Checkbox } from "../ui/checkbox";
+import { benefitServices } from "@/lib/data";
 
-const paymentModes = [
-  "COPAY",
-  "INSURANCE",
-  "SELF",
-] as const;
-
-
+const paymentModes = ["COPAY", "INSURANCE", "SELF"] as const;
 
 // Zod schema
 const invoiceFormSchema = z.object({
-  services_charged: z.array(z.string()).optional(),
+  service_charged: z.string({ required_error: "Service is required" }),
   description: z.string().optional(),
   payment_mode: z.enum(paymentModes).optional().default("SELF"),
   amount: z.number({ required_error: "Amount is required" }),
@@ -56,38 +43,21 @@ const invoiceFormSchema = z.object({
 type invoiceFormValues = z.infer<typeof invoiceFormSchema>;
 
 const defaultValues: Partial<invoiceFormValues> = {
-  services_charged: [],
+  service_charged: "",
   payment_mode: "SELF",
-
   amount: 0,
   copayAmount: 0,
-
   description: "",
   notes: "",
 };
 
 const AddInvoiceForm = ({ visitId }: { visitId: string }) => {
-  const [medicalProviders, setMedicalProvidiers] = useState<MedicalProvider[]>(
-    []
-  );
-  const [fetchingData, setFetchingData] = useState(true);
-
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<invoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
     defaultValues,
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const medicalProviderData = await getData(MEDICAL_PROVIDERS_ENDPOINT);
-      setMedicalProvidiers(medicalProviderData || []);
-    };
-    fetchData().then((data) => {
-      setFetchingData(false);
-    });
-  }, []);
 
   const onSubmit = async (data: invoiceFormValues) => {
     const payload = {
@@ -98,6 +68,7 @@ const AddInvoiceForm = ({ visitId }: { visitId: string }) => {
       const response = await postData(VISIT_INVOICE_ENDPOINT, payload);
       if (response?._id) {
         toast.success("Invoice Successfully created");
+        form.reset();
       } else {
         toast.error("Submission Error", {
           description: "Error submitting request! Please try again.",
@@ -122,7 +93,6 @@ const AddInvoiceForm = ({ visitId }: { visitId: string }) => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-2 gap-4">
-            
                 <FormSelectPopover
                   control={form.control}
                   name="payment_mode"
@@ -135,11 +105,24 @@ const AddInvoiceForm = ({ visitId }: { visitId: string }) => {
                   valueKey="value"
                   displayValue={(m) => m.label}
                 />
+                <div>
+                  <FormSelectPopover
+                    control={form.control}
+                    name="service_charged"
+                    label="Service"
+                    placeholder="Select Service Charged"
+                    items={benefitServices.map((service) => ({
+                      label: service.label,
+                      value: service.value,
+                    }))}
+                    valueKey="value"
+                    displayValue={(m) => m.label}
+                  />
+                </div>
               </div>
 
-          
               <div className="grid grid-cols-2 gap-4">
-              <CustomFormField
+                <CustomFormField
                   control={form.control}
                   name="amount"
                   label="Amount"
@@ -149,7 +132,8 @@ const AddInvoiceForm = ({ visitId }: { visitId: string }) => {
                 <CustomFormField
                   control={form.control}
                   name="copayAmount"
-                  label="Co-pay AMount"
+                  disabled={form.watch("payment_mode") !== "COPAY"}
+                  label="Co-pay Amount"
                   placeholder="Enter Copay amount"
                   type="number"
                 />
