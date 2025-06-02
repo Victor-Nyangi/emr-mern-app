@@ -22,28 +22,34 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircle } from "lucide-react";
 import { VISIT_INVOICE_ENDPOINT } from "@/utilities/endpoints";
 import { getData } from "@/utilities/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Invoice as InvoiceType } from "@/types/data";
+import { format } from "date-fns";
+import AddInvoiceForm from "./add-invoice";
 
 type Props = {
   visitId: string;
 };
 const Invoices = ({ visitId }: Props) => {
-  const [invoicesObj, setInvoices] = useState<
-    | {
-        invoices: InvoiceType[] | undefined;
-        totals: { totalAmount: number; totalCopay: number } | undefined;
-      }
-    | undefined
-  >(undefined);
+  const [totals, setTotals] = useState<{
+    totalAmount: number;
+    totalCopay: number;
+    totalUnpaid: number;
+  }>({ totalAmount: 0, totalCopay: 0 , totalUnpaid: 0});
+  const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [fetchingData, setFetchingData] = useState(true);
+
+  const netPayable = useMemo(() => {
+    return (totals.totalAmount - totals.totalCopay).toFixed(2);
+  }, [totals.totalAmount, totals.totalCopay]);
 
   useEffect(() => {
     const fetchData = async () => {
       setFetchingData(true);
       try {
         const data = await getData(`${VISIT_INVOICE_ENDPOINT}visit/${visitId}`);
-        setInvoices(data);
+        setInvoices(data?.invoices);
+        setTotals(data?.totals);
         console.log("Fetched invoices:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,17 +63,27 @@ const Invoices = ({ visitId }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Invoices</CardTitle>
-        <CardDescription>Billing information for this visit</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Invoices</CardTitle>
+            <CardDescription className="mt-2">
+              Billing information for this visit
+            </CardDescription>
+          </div>
+          <AddInvoiceForm visitId={visitId} />
+        </div>
       </CardHeader>
       <CardContent>
+        {
+          totals.totalUnpaid > 0 &&
         <Alert className="mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Payment Due</AlertTitle>
           <AlertDescription>
-            There is an outstanding balance of $75.00 for this visit.
+            {`There is an outstanding balance of $${totals.totalUnpaid} for this visit.`}
           </AlertDescription>
         </Alert>
+        }
 
         <Table>
           <TableHeader>
@@ -80,52 +96,64 @@ const Invoices = ({ visitId }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">INV-001</TableCell>
-              {/* <TableCell>{visit.date}</TableCell> */}
-              <TableCell>Office Visit - Cardiology</TableCell>
-              <TableCell>$150.00</TableCell>
-              <TableCell>
-                <Badge variant="secondary">Pending Insurance</Badge>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">INV-002</TableCell>
-              {/* <TableCell>{visit.date}</TableCell> */}
-              <TableCell>Laboratory Tests</TableCell>
-              <TableCell>$225.00</TableCell>
-              <TableCell>
-                <Badge variant="secondary">Pending Insurance</Badge>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">INV-003</TableCell>
-              {/* <TableCell>{visit.date}</TableCell> */}
-              <TableCell>Patient Copay</TableCell>
-              <TableCell>$75.00</TableCell>
-              <TableCell>
-                <Badge variant="destructive">Unpaid</Badge>
-              </TableCell>
-            </TableRow>
+            {invoices && invoices?.length > 0 ? (
+              <>
+                {invoices.map((invoice, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{invoice?.invoiceNumber}</TableCell>
+                    <TableCell>
+                      {format(invoice?.createdAt, "yyyy-MM-dd") || ""}
+                    </TableCell>
+                    <TableCell>{invoice.description}</TableCell>
+                    <TableCell>${invoice.amount.toFixed(2)}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          invoice.status === "PAID"
+                            ? "success"
+                            : invoice.status === "UNPAID"
+                            ? "warning"
+                            : "secondary"
+                        }
+                      >
+                        {invoice.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No invoices found for this visit.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
 
         <div className="mt-6">
           <h4 className="text-sm font-semibold mb-2">Payment Summary</h4>
           <div className="space-y-2">
-            <div className="flex justify-between">
-              <span>Total Charges</span>
-              <span>$375.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Insurance Pending</span>
-              <span>$300.00</span>
-            </div>
+            {totals.totalAmount > 0 && (
+              <div className="flex justify-between">
+                <span>Total Amount</span>
+                <span>${totals.totalAmount.toFixed(2)}</span>
+              </div>
+            )}
+            {totals.totalCopay > 0 && (
+              <div className="flex justify-between">
+                <span>Total Copay</span>
+                <span>${totals.totalCopay.toFixed(2)}</span>
+              </div>
+            )}
             <Separator />
-            <div className="flex justify-between font-bold">
-              <span>Patient Responsibility</span>
-              <span>$75.00</span>
-            </div>
+            {totals.totalCopay > 0 && (
+              <div className="flex justify-between font-bold">
+                <span>Patient Responsibility</span>
+                <span>${netPayable}</span>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

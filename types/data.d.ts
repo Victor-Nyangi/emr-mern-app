@@ -345,7 +345,7 @@ export interface Treatment {
 
 export interface Invoice {
   visitId: string;
-  services_charged?: string[];
+  service_charged: string;
   description?: string[];
   payment_mode?: ("COPAY" | "INSURANCE" | "SELF")[];
   amount: number;
@@ -353,6 +353,6 @@ export interface Invoice {
   status?: "PAID" | "UNPAID" | "PENDING INSURANCE REVIEW";
   invoiceNumber: string;
   notes?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

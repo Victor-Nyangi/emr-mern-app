@@ -16,6 +16,7 @@ interface CustomFormFieldProps {
   placeholder?: string;
   readonly?: boolean;
   type?: "text" | "number" | "email" | "password";
+  disabled?: boolean;
   description?: string;
 }
 
@@ -28,6 +29,7 @@ const CustomFormField: React.FC<CustomFormFieldProps> = ({
   readonly=false,
   type = "text",
   description,
+  disabled = false,
 }) => (
   <FormField
     control={control}
@@ -40,6 +42,7 @@ const CustomFormField: React.FC<CustomFormFieldProps> = ({
             type={type}
             placeholder={placeholder}
             value={field.value ?? ""}
+            disabled={disabled}
             readOnly={readonly}
             onChange={(e) =>
               field.onChange(
