@@ -8,12 +8,12 @@ export default async function VisitDetailPage({
   params: { id: string };
 }) {
   const paramsResponse = await params;
-  const visit = await getData(`${VISITS_ENDPOINT}${paramsResponse?.id}/`);
+  const data = await getData(`${VISITS_ENDPOINT}${paramsResponse?.id}/`);
 
   return (
     <div className="container mx-auto sm:p-8 p-4">
       <div className="flex flex-col space-y-6">
-        <VisitWrapper visit={visit} />
+        <VisitWrapper visit={data?.visit} patient={data?.patient}/>
       </div>
     </div>
   );

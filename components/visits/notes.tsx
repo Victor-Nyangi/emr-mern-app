@@ -32,7 +32,6 @@ const Notes = ({ visitId }: Props) => {
           `${VISIT_CLINICAL_NOTES_ENDPOINT}visit/${visitId}`
         );
         setNotes(data);
-        console.log("Fetched notes:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

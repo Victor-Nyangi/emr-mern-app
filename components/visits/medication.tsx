@@ -57,7 +57,6 @@ const Medications = ({ visitId, patientId }: Props) => {
       try {
         const data = await getData(`${MEDICATIONS_ENDPOINT}visit/${visitId}`);
         setMedications(data);
-        console.log("Fetched medications:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

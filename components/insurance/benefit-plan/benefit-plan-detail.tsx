@@ -18,7 +18,6 @@ type Props = {
   policies: Policy[];
 };
 export default function BenefitPlanSection({ benefit_plan, policies }: Props) {
-  console.log(benefit_plan, "bnefit_plan");
   const [showAlert, setShowAlert] = useState(false);
 
   // Define sections for the detail page

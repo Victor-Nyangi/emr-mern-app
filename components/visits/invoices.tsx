@@ -35,7 +35,7 @@ const Invoices = ({ visitId }: Props) => {
     totalAmount: number;
     totalCopay: number;
     totalUnpaid: number;
-  }>({ totalAmount: 0, totalCopay: 0 , totalUnpaid: 0});
+  }>({ totalAmount: 0, totalCopay: 0, totalUnpaid: 0 });
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [fetchingData, setFetchingData] = useState(true);
 
@@ -50,7 +50,6 @@ const Invoices = ({ visitId }: Props) => {
         const data = await getData(`${VISIT_INVOICE_ENDPOINT}visit/${visitId}`);
         setInvoices(data?.invoices);
         setTotals(data?.totals);
-        console.log("Fetched invoices:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -74,16 +73,15 @@ const Invoices = ({ visitId }: Props) => {
         </div>
       </CardHeader>
       <CardContent>
-        {
-          totals.totalUnpaid > 0 &&
-        <Alert className="mb-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Payment Due</AlertTitle>
-          <AlertDescription>
-            {`There is an outstanding balance of $${totals.totalUnpaid} for this visit.`}
-          </AlertDescription>
-        </Alert>
-        }
+        {totals.totalUnpaid > 0 && (
+          <Alert className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Payment Due</AlertTitle>
+            <AlertDescription>
+              {`There is an outstanding balance of $${totals.totalUnpaid} for this visit.`}
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Table>
           <TableHeader>

@@ -12,70 +12,54 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Link from "next/link";
-import {
-  Calendar,
-  Clock,
-  FileText,
-  User,
-  X,
-  Printer,
-  Edit,
-  ChevronRight,
-} from "lucide-react";
+import { Calendar, User, X, Printer, Edit, ChevronRight } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
+import { Patient, Visit } from "@/types/data";
+import { format, formatDistanceToNow } from "date-fns";
+import { constructUserName } from "@/lib/utils";
 
 type Props = {
-  patient: any;
-  visit: any;
+  patient: Patient;
+  visit: Visit;
 };
 
 const VisitBanner = ({ patient, visit }: Props) => {
-  console.log("Visit Banner Props:", { patient, visit });
+  const patientName = `${patient.first_name} ${patient.last_name}`;
+  const patientAge = formatDistanceToNow(new Date(patient.date_of_birth), {
+    addSuffix: false,
+  });
+
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
   return (
     <>
       {/* Visit Summary Card */}
       <Card className="mb-5">
-        {/* <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle>Visit Summary</CardTitle>
-           
-          </div>
-          <CardDescription>Details about the patient visit</CardDescription>
-        </CardHeader> */}
         <CardContent>
           <div className="flex flex-col md:flex-row justify-between items-start mt-2 mb-4 md:items-center gap-4">
             <div className="flex items-center gap-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src="/placeholder.svg" alt={patient.name} />
+                <AvatarImage src="/placeholder.svg" alt={patientName} />
                 <AvatarFallback>
-                  {patient.name
+                  {patientName
                     .split(" ")
                     .map((n: string) => n[0])
                     .join("")}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-bold">{patient.name}</h1>
+                <h1 className="text-2xl font-bold">{patientName}</h1>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <span>ID: {visit._id}</span>
                   <span>•</span>
                   <Badge
                     variant={
-                      visit.status === "Completed" ? "success" : "default"
+                      visit.status === "COMPLETED" ? "success" : "default"
                     }
                   >
                     {visit.status}
@@ -141,7 +125,7 @@ const VisitBanner = ({ patient, visit }: Props) => {
 
                   <div>
                     <div className="text-muted-foreground">
-                      {patient.age} / {patient.gender} | ID: {patient._id}
+                      {patientAge} / {patient.gender} | ID: {patient?._id}
                     </div>
                   </div>
                 </div>
@@ -159,11 +143,20 @@ const VisitBanner = ({ patient, visit }: Props) => {
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="h-4 w-4 mr-2" />
-              {visit.date}, {visit.time} ({visit.duration})
+              {visit?.visitDate && (
+                <span>{format(visit?.visitDate, "yyyy-MM-dd")}</span>
+              )}
             </div>
             <div className="flex items-center text-sm">
               <User className="h-4 w-4 mr-2 text-muted-foreground" />
-              {visit.doctor} ({visit.department} - {visit.location})
+              {visit?.currentQueue ? (
+                <span>
+                  {constructUserName(visit?.currentQueue?.assignedTo)} (
+                  {visit.currentQueue?.departmentId?.name})
+                </span>
+              ) : (
+                <span>-</span>
+              )}
             </div>
           </div>
         </CardContent>

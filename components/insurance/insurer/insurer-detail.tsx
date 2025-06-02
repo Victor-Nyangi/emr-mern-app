@@ -29,7 +29,6 @@ export default function InsurerDetailSection({
   benefit_plans,
 }: Props) {
   const [showAlert, setShowAlert] = useState(false);
-  console.log(benefit_plans, "benefit_plans");
 
   // Define sections for the detail page
   const sections: DetailSection[] = [
