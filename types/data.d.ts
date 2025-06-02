@@ -14,6 +14,13 @@ export type PayloadT = {
   [key: string]: any;
 };
 
+export interface UserType {
+  first_name: string;
+  last_name: string;
+  salutation: string;
+  _id: string;
+}
+
 export interface Patient {
   _id: string;
   salutation: string;
@@ -45,12 +52,7 @@ export interface Appointment {
     first_name: string;
     last_name: string;
   };
-  medicalProvider_id: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  medicalProvider_id: UserType;
   status: string;
   type: string;
   time: string;
@@ -61,12 +63,7 @@ export interface Appointment {
 
 export interface ClinicalNote {
   patient_id: string;
-  medicalProvider_id: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  medicalProvider_id: UserType;
   content: string;
   createdAt: Date;
   updatedAt: Date;
@@ -79,14 +76,12 @@ export interface Visit {
     first_name: string;
     last_name: string;
   };
-  queueId: {
-    _id: string;
-    name: string;
-  };
+  currentQueue: BaseQueue;
   payment_method: string;
   isFollowUp: boolean;
   status: string;
   notes: string;
+  startTime: Date;
   visitDate: string;
   createdAt: Date;
   updatedAt: Date;
@@ -123,13 +118,19 @@ export interface Department {
   updated_date: string;
 }
 
-export interface Queue {
+export type BaseQueue = {
+  name: string;
   _id: string;
-  departmentId: string;
+  departmentId: {
+    name: string;
+    _id: string;
+  };
+  assignedTo: UserType;
+};
+export interface Queue extends BaseQueue {
   priority: string;
   status: number;
   assignedTo: string;
-  name: string;
   serviceStartTime: Date;
   serviceStartTime: Date;
   notes: string;
@@ -253,12 +254,7 @@ export interface Vital {
 
 export interface Diagnosis {
   _id: string;
-  medicalProvider_id: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  medicalProvider_id: UserType;
   visit_id: string;
   diagnosis: string;
   code: string;
@@ -272,12 +268,7 @@ export interface Diagnosis {
 
 export interface Test {
   _id: string;
-  ordered_by: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  ordered_by: UserType;
   visit_id: string;
   testName: string;
   result: string;
@@ -296,12 +287,7 @@ export interface VisitMedication {
   endDate: string;
   status: string;
   duration: string;
-  prescribedBy: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  prescribedBy: UserType;
   patientId: string;
   visitId: string;
   notes: string;
@@ -311,12 +297,7 @@ export interface VisitMedication {
 
 export interface VisitClinicalNote {
   visit_id: string;
-  medicalProvider_id: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  medicalProvider_id: UserType;
   assessment: string[];
   plan: string[];
   content: string;
@@ -330,12 +311,7 @@ export interface Treatment {
   type: "Procedure" | "Periodic" | "Wholesome" | "Other";
   startDate: Date;
   endDate: Date;
-  medicalProvider_id: {
-    first_name: string;
-    last_name: string;
-    salutation: string;
-    _id: string;
-  };
+  medicalProvider_id: UserType;
   status: "Scheduled" | "Ongoing" | "Completed" | "Cancelled";
   notes?: string;
   isRecommended: boolean;

@@ -30,7 +30,7 @@ export default async function Page() {
           </div>
         </div>
 
-        <List columns={queueColumns} data={queues} filter_key="name"/>
+        <List columns={queueColumns} data={queues} filter_key="name" />
       </div>
     </>
   );

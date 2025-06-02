@@ -326,7 +326,7 @@ const PatientBanner = ({ patient }: Props) => {
                           {vitals.map((vital, index) => (
                             <tr key={index} className="border-b last:border-0">
                               <td className="py-3">
-                                {format(vital.createdAt, "PPP")}
+                                {vital.createdAt ? format(vital.createdAt, "PPP") : "-"}
                               </td>
                               <td className="py-3">
                                 {vital.blood_pressure} mmHg

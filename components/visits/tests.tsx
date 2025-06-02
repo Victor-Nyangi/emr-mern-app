@@ -48,7 +48,6 @@ const Tests = ({ visitId }: Props) => {
       try {
         const data = await getData(`${TESTS_ENDPOINT}visit/${visitId}`);
         setDiagnoses(data);
-        console.log("Fetched tests:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -61,13 +60,13 @@ const Tests = ({ visitId }: Props) => {
   return (
     <Card>
       <CardHeader>
-      <div className="flex items-center justify-between">
-      <div>
-        <CardTitle>Laboratory Tests</CardTitle>
-        <CardDescription className="mt-2">
-        Tests ordered and results for this visit
-        </CardDescription>
-        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Laboratory Tests</CardTitle>
+            <CardDescription className="mt-2">
+              Tests ordered and results for this visit
+            </CardDescription>
+          </div>
           <AddTestForm visitId={visitId} />
         </div>
       </CardHeader>

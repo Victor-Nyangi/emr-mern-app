@@ -22,43 +22,18 @@ import Invoices from "./invoices";
 import Treatment from "./treatment";
 import Medications from "./medication";
 import Notes from "./notes";
-import { Visit } from "@/types/data";
+import { Visit, Patient } from "@/types/data";
 
 interface Props {
   visit: Visit;
+  patient: Patient;
 }
-const mockVisit = {
-  _id: "V-12345",
-  date: "April 27, 2025",
-  time: "10:30 AM",
-  status: "Completed",
-  type: "Follow-up",
-  duration: "30 minutes",
-  doctor: "Dr. Sarah Johnson",
-  department: "Cardiology",
-  location: "Main Hospital, Room 302",
-  notes:
-    "Patient reported improvement in symptoms. Continue current medication regimen.",
-};
 
-const patient = {
-  _id: "P-5678",
-  name: "Robert Anderson",
-  age: 45,
-  gender: "Male",
-  dob: "05/12/1980",
-  phone: "(555) 123-4567",
-  email: "robert.anderson@example.com",
-  address: "123 Main St, Anytown, CA 94123",
-  insurance: "BlueCross Health Plan",
-  insuranceId: "BC987654321",
-};
-const VisitWrapper = ({ visit }: Props) => {
-  console.log(visit, "visit");
+const VisitWrapper = ({ visit, patient }: Props) => {
   return (
     <section>
       {/* Banner */}
-      <VisitBanner patient={patient} visit={mockVisit} />
+      <VisitBanner patient={patient} visit={visit} />
 
       {/* Tabs for different sections */}
       <Tabs defaultValue="vitals" className="w-full">

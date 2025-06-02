@@ -67,7 +67,6 @@ const Treatment = ({ visitId }: Props) => {
           `${VISIT_TREATMENT_ENDPOINT}visit/${visitId}`
         );
         setTreatments(data);
-        console.log("Fetched treatments:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

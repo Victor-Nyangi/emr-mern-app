@@ -51,6 +51,11 @@ export const columns: ColumnDef<Queue>[] = [
   {
     accessorKey: "departmentId",
     header: "Department",
+    cell: ({ row }) => {
+      const department: { name: string; _id: string } =
+        row.getValue("departmentId");
+      return <span>{department?.name}</span>;
+    },
   },
   {
     accessorKey: "status",
@@ -59,6 +64,15 @@ export const columns: ColumnDef<Queue>[] = [
   {
     accessorKey: "assignedTo",
     header: "Assigned To",
+    cell: ({ row }) => {
+      const assignedTo: {salutation: string; first_name: string; last_name: string} = row.getValue("assignedTo");;
+
+      return (
+        <span>
+          {`${assignedTo.salutation} ${assignedTo.first_name} ${assignedTo.last_name}`}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "serviceStartTime",
