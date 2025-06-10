@@ -148,9 +148,9 @@ const Treatment = ({ visitId }: Props) => {
             treatments?.recommended_treatments.length > 0 ? (
               <div className="space-y-4">
                 {treatments?.recommended_treatments.map((treatment, index) => (
-                  <>
+                  <div key={index}>
                     {treatment?.type === "Wholesome" ? (
-                      <div className="border rounded-lg p-4" key={index}>
+                      <div className="border rounded-lg p-4">
                         <div className="flex justify-between items-start">
                           <div>
                             <h4 className="font-medium">
@@ -217,7 +217,7 @@ const Treatment = ({ visitId }: Props) => {
                         </div>
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </div>
             ) : (

@@ -3,7 +3,6 @@
 import { Visit } from "@/types/data";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +17,17 @@ import { Checkbox } from "../ui/checkbox";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { formatDateFn } from "@/lib/utils";
+
+const StatusEnum: Record<
+  string,
+  "default" | "destructive" | "success" | "secondary" | "outline" | "warning"
+> = {
+  CANCELLED: "destructive",
+  "IN PROGRESS": "outline",
+  COMPLETED: "success",
+  STALE: "secondary",
+  ARRIVED: "default",
+};
 
 export const columns: ColumnDef<Visit>[] = [
   {
@@ -56,12 +66,12 @@ export const columns: ColumnDef<Visit>[] = [
     },
   },
   {
-    accessorKey: "queueId",
+    accessorKey: "currentQueue",
     header: "Queue",
     cell: ({ row }) => {
       const visit = row.original;
 
-      return <span>{`${visit?.queueId?.name}`}</span>;
+      return <span>{`${visit?.currentQueue?.name}`}</span>;
     },
   },
   {
@@ -82,13 +92,13 @@ export const columns: ColumnDef<Visit>[] = [
     accessorKey: "status",
     header: () => "Status",
     cell: ({ row }) => {
-      const status: boolean = row.getValue("status");
+      const status: string = row.getValue("status");
 
       return (
         <div className="flex space-x-2">
           {
-            <Badge variant={`${status ? "success" : "destructive"}`}>
-              {status ? "Active" : "Inactive"}
+            <Badge variant={StatusEnum[status as keyof typeof StatusEnum]}>
+              {status}
             </Badge>
           }
         </div>

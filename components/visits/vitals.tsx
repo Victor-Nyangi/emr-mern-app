@@ -52,7 +52,7 @@ const Vitals = ({
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Vital Signs</CardTitle>
-            <CardDescription>
+            <CardDescription className="mt-2">
               Patient's vital measurements during this visit
             </CardDescription>
           </div>
