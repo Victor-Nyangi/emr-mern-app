@@ -42,7 +42,7 @@ const medicationFormSchema = z.object({
   startDate: z.coerce.date().default(new Date()),
   endDate: z.coerce.date().default(new Date()),
   status: z.enum(statuses).default("Active"),
-  duration: z.string().min(1, "Dosage is required"),
+  duration: z.string().min(1, "Medication duration is required"),
   prescribedBy: z.string().min(1, "Please select a medical provider"),
   notes: z.string().optional(),
 });

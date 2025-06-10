@@ -45,7 +45,7 @@ const visitFormSchema = z.object({
     required_error: "You need to select a payment method.",
   }),
   isFollowUp: z.boolean(),
-  queueId: z.string().nonempty("Please select a queue"),
+  currentQueue: z.string().nonempty("Please select a queue"),
 });
 
 type visitFormValues = z.infer<typeof visitFormSchema>;
@@ -53,7 +53,7 @@ type visitFormValues = z.infer<typeof visitFormSchema>;
 const defaultValues: Partial<visitFormValues> = {
   payment_method: "",
   isFollowUp: false,
-  queueId: "",
+  currentQueue: "",
 };
 
 export default function StartVisit() {
@@ -133,7 +133,7 @@ export default function StartVisit() {
             ) : (
               <FormSelectPopover
                 control={form.control}
-                name="queueId"
+                name="currentQueue"
                 label="Queue"
                 placeholder="Select queue"
                 items={queues}

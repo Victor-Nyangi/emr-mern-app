@@ -43,8 +43,7 @@ const LoginForm = ({
     setIsLoading(true);
 
     try {
-      console.log(userDetails, 'userDetails')
-      const data = await loginSubmitHandler({ ...userDetails });
+    const data = await loginSubmitHandler({ ...userDetails });
       // check if unsuccessful Login
 
       if (!data?.token) {

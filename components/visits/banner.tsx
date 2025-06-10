@@ -12,7 +12,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Calendar, User, X, Printer, Edit, ChevronRight } from "lucide-react";
+import {
+  Calendar,
+  User,
+  X,
+  Printer,
+  Edit,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
@@ -22,20 +30,75 @@ import { Badge } from "@/components/ui/badge";
 import { Patient, Visit } from "@/types/data";
 import { format, formatDistanceToNow } from "date-fns";
 import { constructUserName } from "@/lib/utils";
+import { toast } from "sonner";
+import { VISITS_ENDPOINT } from "@/utilities/endpoints";
+import { postData } from "@/utilities/api";
+import { useRouter } from "next/navigation";
 
 type Props = {
   patient: Patient;
   visit: Visit;
 };
 
+const transitionEnum = {
+  cancel: "CANCELLED",
+  complete: "COMPLETED",
+  transition: "IN PROGRESS",
+};
+
+const StatusEnum: Record<string, "default" | "destructive" | "success" | "secondary" | "outline" | "warning"> = {
+  CANCELLED: "destructive",
+  "IN PROGRESS": "outline",
+  COMPLETED: "success",
+  STALE: "secondary",
+  ARRIVED: "default",
+};
+
 const VisitBanner = ({ patient, visit }: Props) => {
+  console.log(visit, "visit");
   const patientName = `${patient.first_name} ${patient.last_name}`;
   const patientAge = formatDistanceToNow(new Date(patient.date_of_birth), {
     addSuffix: false,
   });
+  const router = useRouter();
 
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [openCompleteDialog, setOpenCompleteDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const transitionVisit = async (transitionType: string, endpoint: string) => {
+    const status = transitionEnum[transitionType as keyof typeof transitionEnum];
+    const payload = {
+      status: status,
+    };
+    try {
+      const response = await postData(
+        `${VISITS_ENDPOINT}/${transitionType}/${visit._id}`,
+        payload,
+        "PATCH"
+      );
+      if (response?._id) {
+        toast.success(`Visit Successfully ${status.toLowerCase()}d`);
+
+        router.push("/visits");
+      } else {
+        toast.error("Submission Error", {
+          description: "Error in submitting request! Please try again.",
+        });
+      }
+    } catch (error) {
+      toast.error("Submission Error", {
+        description: (error as Error)?.message || "An error occurred.",
+      });
+    } finally {
+      setIsLoading(false);
+      if (transitionType === "complete") {
+        setOpenCompleteDialog(false);
+      } else {
+        setOpenCancelDialog(false);
+      }
+    }
+  };
   return (
     <>
       {/* Visit Summary Card */}
@@ -59,7 +122,7 @@ const VisitBanner = ({ patient, visit }: Props) => {
                   <span>•</span>
                   <Badge
                     variant={
-                      visit.status === "COMPLETED" ? "success" : "default"
+                      StatusEnum[visit.status as keyof typeof StatusEnum]
                     }
                   >
                     {visit.status}
@@ -68,54 +131,91 @@ const VisitBanner = ({ patient, visit }: Props) => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Printer className="h-4 w-4" />
-                Print
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Edit className="h-4 w-4" />
-                Edit
-              </Button>
-              <Dialog
-                open={openCancelDialog}
-                onOpenChange={setOpenCancelDialog}
-              >
-                <DialogTrigger asChild>
-                  <Button variant="destructive" size="sm" className="gap-2">
-                    <X className="h-4 w-4" />
-                    Cancel Visit
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Cancel Visit</DialogTitle>
-                    <DialogDescription>
-                      Are you sure you want to cancel this visit? This action
-                      cannot be undone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setOpenCancelDialog(false)}
-                    >
-                      No, keep visit
+            {!["CANCELLED", "COMPLETED"].includes(visit.status) && (
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Printer className="h-4 w-4" />
+                  Print
+                </Button>
+                {visit.status === "IN PROGRESS" && (
+                  <Dialog
+                    open={openCompleteDialog}
+                    onOpenChange={setOpenCompleteDialog}
+                  >
+                    <DialogTrigger asChild>
+                      <Button variant="success" size="sm" className="gap-2">
+                        End Visit
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Complete Visit</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to complete this visit? This
+                          action cannot be undone.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => setOpenCompleteDialog(false)}
+                        >
+                          No, keep visit
+                        </Button>
+                        <Button
+                          variant="default"
+                          disabled={isLoading}
+                          onClick={() =>
+                            transitionVisit("complete", "transition")
+                          }
+                        >
+                          {isLoading && (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          )}
+                          Yes, complete visit
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+
+                <Dialog
+                  open={openCancelDialog}
+                  onOpenChange={setOpenCancelDialog}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="gap-2">
+                      <X className="h-4 w-4" />
+                      Cancel Visit
                     </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => setOpenCancelDialog(false)}
-                    >
-                      Yes, cancel visit
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-              <Button size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                View Patient
-              </Button>
-            </div>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Cancel Visit</DialogTitle>
+                      <DialogDescription>
+                        Are you sure you want to cancel this visit? This action
+                        cannot be undone.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenCancelDialog(false)}
+                      >
+                        No, keep visit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        disabled={isLoading}
+                        onClick={() => transitionVisit("cancel", "cancel")}
+                      >
+                        Yes, cancel visit
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <div className="border-t pt-4 text-sm">
@@ -135,6 +235,7 @@ const VisitBanner = ({ patient, visit }: Props) => {
                     href={`/patients/${patient._id}`}
                     className="flex items-center gap-2"
                   >
+                    <User className="h-4 w-4" />
                     View Complete Profile
                     <ChevronRight className="h-4 w-4" />
                   </Link>

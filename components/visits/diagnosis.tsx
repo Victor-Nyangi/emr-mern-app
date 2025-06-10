@@ -39,8 +39,7 @@ const Diagnosis = ({ visitId }: Props) => {
       try {
         const data = await getData(`${DIAGNOSIS_ENDPOINT}visit/${visitId}`);
         setDiagnoses(data);
-        console.log("Fetched diagnoses:", data);
-      } catch (error) {
+     } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setFetchingData(false);
@@ -82,7 +81,10 @@ const Diagnosis = ({ visitId }: Props) => {
                   </TableCell>
                   <TableCell> {diagnosis?.code || ""}</TableCell>
                   <TableCell> {diagnosis?.type || ""}</TableCell>
-                  <TableCell> {format(diagnosis?.date, "yyyy-MM-dd") || ""}</TableCell>
+                  <TableCell>
+                    {" "}
+                    {format(diagnosis?.date, "yyyy-MM-dd") || ""}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={`${
