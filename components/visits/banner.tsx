@@ -34,6 +34,7 @@ import { toast } from "sonner";
 import { VISITS_ENDPOINT } from "@/utilities/endpoints";
 import { postData } from "@/utilities/api";
 import { useRouter } from "next/navigation";
+import TransitionVisit from "./transition-visit";
 
 type Props = {
   patient: Patient;
@@ -46,18 +47,20 @@ const transitionEnum = {
   transition: "IN PROGRESS",
 };
 
-const StatusEnum: Record<string, "default" | "destructive" | "success" | "secondary" | "outline" | "warning"> = {
+const StatusEnum: Record<
+  string,
+  "default" | "destructive" | "success" | "secondary" | "outline" | "warning"
+> = {
   CANCELLED: "destructive",
-  "IN PROGRESS": "outline",
+  "IN PROGRESS": "success",
   COMPLETED: "success",
   STALE: "secondary",
   ARRIVED: "default",
 };
 
 const VisitBanner = ({ patient, visit }: Props) => {
-  console.log(visit, "visit");
-  const patientName = `${patient.first_name} ${patient.last_name}`;
-  const patientAge = formatDistanceToNow(new Date(patient.date_of_birth), {
+  const patientName = `${patient?.first_name} ${patient?.last_name}`;
+  const patientAge = formatDistanceToNow(new Date(patient?.date_of_birth), {
     addSuffix: false,
   });
   const router = useRouter();
@@ -66,14 +69,15 @@ const VisitBanner = ({ patient, visit }: Props) => {
   const [openCompleteDialog, setOpenCompleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const transitionVisit = async (transitionType: string, endpoint: string) => {
-    const status = transitionEnum[transitionType as keyof typeof transitionEnum];
+  const transitionVisit = async (transitionType: string) => {
+    const status =
+      transitionEnum[transitionType as keyof typeof transitionEnum];
     const payload = {
       status: status,
     };
     try {
       const response = await postData(
-        `${VISITS_ENDPOINT}/${transitionType}/${visit._id}`,
+        `${VISITS_ENDPOINT}transition/${visit._id}`,
         payload,
         "PATCH"
       );
@@ -165,9 +169,7 @@ const VisitBanner = ({ patient, visit }: Props) => {
                         <Button
                           variant="default"
                           disabled={isLoading}
-                          onClick={() =>
-                            transitionVisit("complete", "transition")
-                          }
+                          onClick={() => transitionVisit("complete")}
                         >
                           {isLoading && (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -179,44 +181,47 @@ const VisitBanner = ({ patient, visit }: Props) => {
                   </Dialog>
                 )}
 
-                <Dialog
-                  open={openCancelDialog}
-                  onOpenChange={setOpenCancelDialog}
-                >
-                  <DialogTrigger asChild>
-                    <Button variant="destructive" size="sm" className="gap-2">
-                      <X className="h-4 w-4" />
-                      Cancel Visit
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Cancel Visit</DialogTitle>
-                      <DialogDescription>
-                        Are you sure you want to cancel this visit? This action
-                        cannot be undone.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button
-                        variant="outline"
-                        onClick={() => setOpenCancelDialog(false)}
-                      >
-                        No, keep visit
+                {["ARRIVED", "STALE"].includes(visit.status) && (
+                  <Dialog
+                    open={openCancelDialog}
+                    onOpenChange={setOpenCancelDialog}
+                  >
+                    <DialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="gap-2">
+                        <X className="h-4 w-4" />
+                        Cancel Visit
                       </Button>
-                      <Button
-                        variant="destructive"
-                        disabled={isLoading}
-                        onClick={() => transitionVisit("cancel", "cancel")}
-                      >
-                        Yes, cancel visit
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Cancel Visit</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to cancel this visit? This
+                          action cannot be undone.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => setOpenCancelDialog(false)}
+                        >
+                          No, keep visit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          disabled={isLoading}
+                          onClick={() => transitionVisit("cancel")}
+                        >
+                          Yes, cancel visit
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             )}
           </div>
+
           <div className="space-y-2">
             <div className="border-t pt-4 text-sm">
               <div className="flex justify-between">
@@ -259,6 +264,10 @@ const VisitBanner = ({ patient, visit }: Props) => {
                 <span>-</span>
               )}
             </div>
+            <TransitionVisit
+              visitId={visit?._id}
+              visitCurrentQueue={visit?.currentQueue?._id}
+            />
           </div>
         </CardContent>
         <CardFooter></CardFooter>

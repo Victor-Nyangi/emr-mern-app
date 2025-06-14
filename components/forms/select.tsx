@@ -26,7 +26,8 @@ import {
     control: any
     name: string
     label: string
-    placeholder?: string
+    placeholder?: string;
+    disableItem?: (item: T) => boolean
     items: T[]
     valueKey: keyof T
     displayValue: (item: T) => React.ReactNode
@@ -36,6 +37,7 @@ import {
     control,
     name,
     label,
+    disableItem,
     placeholder = "Select an option",
     items,
     valueKey,
@@ -78,6 +80,7 @@ import {
                           <CommandItem
                             key={value}
                             value={value}
+                            disabled={disableItem && disableItem(item)}
                             onSelect={() => field.onChange(value)}
                           >
                             <CheckIcon
