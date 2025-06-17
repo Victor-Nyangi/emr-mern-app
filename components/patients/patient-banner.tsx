@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { format, formatDistanceToNow } from "date-fns";
 
 import {
@@ -27,53 +27,58 @@ import { Button } from "@/components/ui/button";
 import { Appointment, ClinicalNote, Patient, Vital } from "@/types/data";
 import AddClinicalNoteForm from "./add-note";
 import { constructUserName } from "@/lib/utils";
-import { getData } from "@/utilities/api";
+import {  getDataRq } from "@/utilities/api";
 import AddAppointmentForm from "./add-appointment";
 import { PATIENTS_ENDPOINT, VITALS_ENDPOINT } from "@/utilities/endpoints";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   patient: Patient;
 };
 const PatientBanner = ({ patient }: Props) => {
   const patientId = patient._id;
-  const [fetchingData, setFetchingData] = useState(true);
-
-  // State for the list of appointments
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-  // State for the list of notes
-  const [notes, setNotes] = useState<ClinicalNote[]>([]);
-
-  // State for the list of patient vitals
-  const [vitals, setVitals] = useState<Vital[]>([]);
 
   const patientAge = formatDistanceToNow(new Date(patient?.date_of_birth), {
     addSuffix: false,
   });
   const patientName = `${patient.first_name} ${patient.last_name}`;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setFetchingData(true);
-      try {
-        const [appointmentData, notesData, vitalsData] = await Promise.all([
-          getData(`${PATIENTS_ENDPOINT}${patientId}/appointments`),
-          getData(`${PATIENTS_ENDPOINT}${patientId}/clinical-notes`),
-          getData(`${VITALS_ENDPOINT}patient/${patientId}`),
-        ]);
-        setAppointments(appointmentData || []);
-        setNotes(notesData || []);
-        setVitals(vitalsData || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Optionally set an error state here
-      } finally {
-        setFetchingData(false);
-      }
-    };
+const { data: appointments = [], isPending: loadingAppointments } = useQuery<Appointment[]>({
+  queryKey: ["appointments", patientId],
+  queryFn: () => getDataRq<Appointment[]>(`${PATIENTS_ENDPOINT}${patientId}/appointments`),
+});
 
-    fetchData();
-  }, []);
+  const { data: notes = [], isPending: loadingNotes } = useQuery<ClinicalNote[]>({
+    queryKey: ["clinical-notes", patientId],
+    queryFn: () => getDataRq<ClinicalNote[]>(`${PATIENTS_ENDPOINT}${patientId}/clinical-notes`),
+  });
+
+  const { data: vitals = [], isPending: loadingVitals } = useQuery<Vital[]>({
+    queryKey: ["vitals", patientId],
+    queryFn: () => getDataRq<Vital[]>(`${VITALS_ENDPOINT}patient/${patientId}`),
+  });
+
+  const isLoading = loadingAppointments || loadingNotes || loadingVitals;
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div className="flex flex-col space-y-3" key={index}>
+              <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="min-h-[100vh] animate-pulse flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -257,7 +262,7 @@ const PatientBanner = ({ patient }: Props) => {
                 <CardContent>
                   {appointments.length ? (
                     <div className="divide-y">
-                      {appointments.map((appointment, index) => (
+                      {appointments.map((appointment, index: number) => (
                         <div key={index} className="py-4 first:pt-0">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium">{appointment.type}</h4>
@@ -326,7 +331,9 @@ const PatientBanner = ({ patient }: Props) => {
                           {vitals.map((vital, index) => (
                             <tr key={index} className="border-b last:border-0">
                               <td className="py-3">
-                                {vital.createdAt ? format(vital.createdAt, "PPP") : "-"}
+                                {vital.createdAt
+                                  ? format(vital.createdAt, "PPP")
+                                  : "-"}
                               </td>
                               <td className="py-3">
                                 {vital.blood_pressure} mmHg

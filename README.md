@@ -272,3 +272,23 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 export default function Calendar() {
   return <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />;
 }
+
+| Feature                         | `react-query`  dependent  |
+| ------------------------------- | ---------------------------- |
+| **Patient dashboards**          | ✅ yes — fast cache & refetch |
+| **Live lab result updates**     | ✅ yes — background updates   |
+| **Forms with autosave**         | ✅ yes — optimistic updates   |
+| **Appointment scheduling**      | ✅ yes — staleTime/cache      |
+| **Background sync / polling**   | ✅ yes — out of the box       |
+| **Pagination/search**           | ✅ yes — smooth client UI     |
+| **Client-side tabs/navigation** | ✅ yes — avoid full reloads   |
+
+
+
+| Layer                                    | Tool                                |
+| ---------------------------------------- | ----------------------------------- |
+| **Critical SSR Pages**                   | Server Components / fetch           |
+| **Interactive Dashboards / Side Panels** | `react-query`                       |
+| **Patient Data Forms**                   | `react-query` + optimistic mutation |
+| **Background refresh (e.g., vitals)**    | `react-query` + polling             |
+| **Admin or Audit Dashboards**            | SSR + hydration with `dehydrate()`  |

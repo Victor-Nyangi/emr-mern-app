@@ -129,6 +129,15 @@ export const getData = async (ENDPOINT: string) => {
     return { results: [] };
   }
 };
+/**
+ *
+ * @returns list of specified data to support react query data fetch
+ */
+export async function getDataRq<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+}
 
 /**
  * Function that handles post requests
