@@ -1,3 +1,6 @@
+import Link from "next/link";
+import Logo from "../shared/logo";
+
 export default function LandingWrapper({
   children,
 }: Readonly<{
@@ -15,31 +18,17 @@ export default function LandingWrapper({
         <div className="relative z-20 flex flex-col h-full flex min-h-svh w-full">
           <div className="px-4 py-5 mx-auto sm:max-w-xl md:max-w-full md:px-24">
             <div className="relative flex grid items-center grid-cols-2">
-              <a
+              <Link
                 href="/"
                 aria-label="Company"
                 title="Company"
                 className="inline-flex items-center"
               >
-                <svg
-                  className="w-8 text-teal-400"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeMiterlimit="10"
-                  stroke="currentColor"
-                  fill="none"
-                >
-                  <rect x="3" y="1" width="7" height="12" />
-                  <rect x="3" y="17" width="7" height="6" />
-                  <rect x="14" y="1" width="7" height="6" />
-                  <rect x="14" y="11" width="7" height="12" />
-                </svg>
+                <Logo />
                 <span className="ml-2 text-xl font-bold tracking-wide text-white uppercase">
                   Life of Health
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -56,9 +45,9 @@ export default function LandingWrapper({
                   clinicians in that office, clinic, or hospital and are mostly
                   used by providers for diagnosis and treatment.
                 </p>
-                <a
-                  href="/"
-                  aria-label=""
+                <Link
+                  href="/about-us"
+                  aria-label="View more"
                   className="inline-flex items-center font-semibold tracking-wider transition-colors duration-200 text-teal-400 hover:text-teal-300"
                 >
                   Learn more
@@ -69,7 +58,7 @@ export default function LandingWrapper({
                   >
                     <path d="M9.707,5.293l-5-5A1,1,0,0,0,3.293,1.707L7.586,6,3.293,10.293a1,1,0,1,0,1.414,1.414l5-5A1,1,0,0,0,9.707,5.293Z" />
                   </svg>
-                </a>
+                </Link>
               </div>
 
               {/* Main Content */}
