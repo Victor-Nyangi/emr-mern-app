@@ -80,6 +80,9 @@ export const handleApiError = (response: any) => {
   }
 
   if (!response.ok) {
+    toast.error("Request failed", {
+      description: `Failed to fetch data: ${response?.status} ${response?.statusText}`,
+    });
     throw new Error(
       `Failed to fetch data: ${response?.status} ${response?.statusText}`
     );

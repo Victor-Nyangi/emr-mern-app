@@ -15,13 +15,13 @@ export default async function Page() {
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">
         <div className="space-between flex items-center space-y-2">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Visits!</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-blue-700">Visits!</h2>
             <p className="text-muted-foreground">
               Here&apos;s a list of visits
             </p>
           </div>
           <div className="ml-auto">
-            <Button asChild>
+            <Button asChild variant="teal">
               <Link href="/visits/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />
                 Add Visit

@@ -56,9 +56,7 @@ export default function About() {
                   Let us handle your
                   <br className="hidden md:block mt-1" />
                   health care{" "}
-                  <span className="inline-block text-teal-600">
-                    processes
-                  </span>
+                  <span className="inline-block text-teal-600">processes</span>
                 </h2>
                 <p className="text-base text-gray-700 dark:text-gray-200 md:text-lg">
                   Yet, as Deleuze may suggest, the true potency lies not in the

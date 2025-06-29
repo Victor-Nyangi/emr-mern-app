@@ -21,6 +21,12 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        teal: "bg-teal-600 text-white shadow-xs hover:bg-teal-700 focus-visible:ring-teal-500/20",
+        green: "bg-green-600 text-white shadow-xs hover:bg-green-700 focus-visible:ring-green-500/20",
+        blue: "bg-blue-600 text-white shadow-xs hover:bg-blue-700 focus-visible:ring-blue-500/20",
+        "teal-outline": "border border-teal-600 text-teal-600 bg-background shadow-xs hover:bg-teal-50 hover:text-teal-700",
+        "green-outline": "border border-green-600 text-green-600 bg-background shadow-xs hover:bg-green-50 hover:text-green-700",
+        "blue-outline": "border border-blue-600 text-blue-600 bg-background shadow-xs hover:bg-blue-50 hover:text-blue-700",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

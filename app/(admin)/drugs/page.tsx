@@ -22,7 +22,7 @@ export default async function Page() {
           </div>
           <div className="ml-auto">
             <Button asChild>
-              <Link href="/departments/create">
+              <Link href="/drugs/create">
                 <PlusCircleIcon className="mr-2 h-4 w-4" />
                 Create Drug
               </Link>

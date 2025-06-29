@@ -183,7 +183,7 @@ export function ProfileForm() {
             Add URL
           </Button>
         </div>
-        <Button type="submit">Update profile</Button>
+        <Button type="submit" variant="green">Update profile</Button>
       </form>
     </Form>
   );

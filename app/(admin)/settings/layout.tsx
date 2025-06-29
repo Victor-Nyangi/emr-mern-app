@@ -3,16 +3,24 @@ import { SidebarNav } from "@/components/settings/SidebarNav";
 
 const sidebarSettingsItems = [
   {
+    title: "Account",
+    href: "/settings",
+  },
+  {
+    title: "Profile",
+    href: "/settings/profile",
+  },
+  {
     title: "Appearance",
     href: "/settings/appearance",
   },
   {
-    title: "Notifications",
-    href: "/settings/notifications",
-  },
-  {
     title: "Display",
     href: "/settings/display",
+  },
+  {
+    title: "Notifications",
+    href: "/settings/notifications",
   },
 ];
 
@@ -28,7 +36,7 @@ export default function SettingsLayout({
       <main>
         <div className="space-y-6 p-8 pb-16 md:block">
           <div className="space-y-0.5">
-            <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-teal-700">Settings</h2>
             <p className="text-muted-foreground">
               Manage your account settings and set e-mail preferences.
             </p>

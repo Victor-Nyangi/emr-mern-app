@@ -297,7 +297,7 @@ const AddPatient = () => {
             ))}
             <Button
               type="button"
-              variant="outline"
+              variant="green-outline"
               size="sm"
               className="mt-2"
               onClick={() => underlyingConditions.append({ value: "" })}
@@ -330,7 +330,7 @@ const AddPatient = () => {
             ))}
             <Button
               type="button"
-              variant="outline"
+              variant="green-outline"
               size="sm"
               className="mt-2"
               onClick={() => allergies.append({ value: "" })}
@@ -339,7 +339,7 @@ const AddPatient = () => {
             </Button>
           </div>
 
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" variant="teal" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Register patient
           </Button>
