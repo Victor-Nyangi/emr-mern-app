@@ -4,6 +4,7 @@ import { SectionCards } from "@/components/section-cards";
 
 import data from "./data.json";
 import { InteractiveCalendar } from "@/components/interactive-calendar";
+import PermissionDisplay from "@/components/auth/PermissionDisplay";
 
 export default function Page() {
   return (
@@ -15,6 +16,9 @@ export default function Page() {
             <ChartAreaInteractive />
           </div>
           <DataTable data={data} />
+          <div className="px-4 lg:px-6">
+            <PermissionDisplay />
+          </div>
         </div>
         <InteractiveCalendar />
       </div>

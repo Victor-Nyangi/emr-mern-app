@@ -21,16 +21,20 @@ import Link from "next/link";
 import { setCookieWithDefaults } from "@/lib/utils";
 import { loginSubmitHandler } from "@/utilities/api";
 import { toast } from "sonner";
+import { useAuthStore } from "@/lib/auth-store";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const [userDetails, setUserDetails] = useState<LoginPayload>({
-    email: "gichuivictor@gmail.com",
-    password: "gichuivictor@gmail.com",
+    email: "admin@emr.com",
+    password: "admin123",
   });
+  // email: "gichuivictor@gmail.com",
+  // password: "gichuivictor@gmail.com",
   const router = useRouter();
+  const { login, setLoading: setAuthLoading, setError } = useAuthStore();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,23 +45,28 @@ const LoginForm = ({
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e?.preventDefault();
     setIsLoading(true);
+    setAuthLoading(true);
 
     try {
-    const data = await loginSubmitHandler({ ...userDetails });
+      const data = await loginSubmitHandler({ ...userDetails });
+      
       // check if unsuccessful Login
-
       if (!data?.token) {
+        const errorMsg = data?.error_description || "There was a problem with your request.";
         toast.error("Login Error", {
-          description:
-            data?.error_description || "There was a problem with your request.",
+          description: errorMsg,
         });
-
+        setError(errorMsg);
         setUserDetails((prev) => ({
           ...prev,
           email: "",
           password: "",
         }));
       } else {
+        // Store user data in Zustand store
+        login(data);
+
+        // Also store in cookies for backward compatibility
         const userData = {
           [ACCESS_TOKEN]: data?.token,
           [USER_ID]: data?._id,
@@ -80,11 +89,14 @@ const LoginForm = ({
         router.push(`/home`);
       }
     } catch (error) {
+      const errorMsg = "An unexpected error occurred. Please try again later.";
       toast.error("Login Error", {
-        description: "An unexpected error occurred. Please try again later.",
+        description: errorMsg,
       });
+      setError(errorMsg);
     } finally {
       setIsLoading(false);
+      setAuthLoading(false);
     }
   };
 
