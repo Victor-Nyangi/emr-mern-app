@@ -314,4 +314,4 @@ Time restrictions for certain operations
 Emergency access controls for critical situations
 Context-aware permissions that consider multiple factors
 Frontend permission guards for UI-level access control
-Backend middleware for route-level protection
+Backend middleware for route-level protection 

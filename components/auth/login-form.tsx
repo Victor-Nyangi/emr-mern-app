@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { setCookieWithDefaults } from "@/lib/utils";
+import { setCookie } from "nookies";
 import { loginSubmitHandler } from "@/utilities/api";
 import { toast } from "sonner";
 import { useAuthStore } from "@/lib/auth-store";
@@ -74,8 +74,14 @@ const LoginForm = ({
           [NAME]: data?.name,
         };
 
+        // Set cookies with options to allow sending to backend (cross-site, secure, SameSite=None)
         Object.entries(userData).forEach(([key, value]) =>
-          setCookieWithDefaults(key, value)
+          setCookie(null, key, value, {
+            maxAge: 60 * 60, // 1 hour
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',      // Not using HTTPS locally
+            sameSite: 'lax',    // 'lax' is more permissive for local dev
+          })
         );
 
         toast.promise(data, {

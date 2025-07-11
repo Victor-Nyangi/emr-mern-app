@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import ThemeChanger from "./theme-toggle";
 import Profile from "./profile";
+import { NotificationAlert } from "@/components/notifications/notification-alert";
 
 export function SiteHeader() {
   return (
@@ -14,6 +15,7 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">Home</h1>
         <div className="ml-auto flex items-center gap-2">
+          <NotificationAlert />
           <ThemeChanger />
           <Profile />
         </div>

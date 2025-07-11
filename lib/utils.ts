@@ -1,7 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns/format";
-import { setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 import { twMerge } from "tailwind-merge";
+import { EMAIL, USER_ID, ACCESS_TOKEN, NAME } from "@/utilities/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,6 +20,14 @@ export const formatDateFn = (date: string) => {
   return format(date, "LLL dd, y");
 };
 
+export const formatTimeFn = (timeStamp: any) => {
+  const modifiedTimestamp = Number(timeStamp);
+  const modifiedDate = new Date(modifiedTimestamp);
+  const isValidDate = !isNaN(modifiedDate.getTime());
+
+  return isValidDate ? format(modifiedDate, "PPPp") : "Invalid date";
+};
+
 export const constructUserName = (user: {
   salutation: string;
   first_name: string;
@@ -27,4 +36,10 @@ export const constructUserName = (user: {
   return `${user?.salutation ?? ""}. ${user?.first_name ?? ""} ${
     user?.last_name ?? ""
   }`.trim();
+};
+
+export const signOut = () => {
+  [ACCESS_TOKEN, USER_ID, EMAIL, NAME].forEach((cookie) =>
+    destroyCookie(null, cookie)
+  );
 };
