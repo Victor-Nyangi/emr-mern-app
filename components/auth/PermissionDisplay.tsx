@@ -1,11 +1,28 @@
-import React from 'react';
-import { useAuthStore } from '@/lib/auth-store';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+"use client";
+
+import React from "react";
+import { useAuthStore } from "@/lib/auth-store";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export const PermissionDisplay: React.FC = () => {
-  const { user, hasPermission, canRead, canWrite, canCreate, canDelete, isAdmin, isInDepartment } = useAuthStore();
+  const {
+    user,
+    hasPermission,
+    canRead,
+    canWrite,
+    canCreate,
+    canDelete,
+    isAdmin,
+    isInDepartment,
+  } = useAuthStore();
 
   if (!user) {
     return (
@@ -18,31 +35,38 @@ export const PermissionDisplay: React.FC = () => {
     );
   }
 
-  const resources = ['patient', 'visit', 'appointment', 'medical_provider', 'billing', 'clinical_notes'];
-  const actions = ['read', 'write', 'create', 'delete'];
+  const resources = [
+    "patient",
+    "visit",
+    "appointment",
+    "medical_provider",
+    "billing",
+    "clinical_notes",
+  ];
+  const actions = ["read", "write", "create", "delete"];
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>User Permissions</CardTitle>
         <CardDescription>
-          {user.name} ({user.role.display_name}) - {user.department}
+          {user?.name} ({user?.role?.display_name}) - {user?.department}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* User Info */}
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <strong>Role:</strong> {user.role.display_name}
+            <strong>Role:</strong> {user?.role?.display_name}
           </div>
           <div>
-            <strong>Department:</strong> {user.department}
+            <strong>Department:</strong> {user?.department}
           </div>
           <div>
-            <strong>Employee ID:</strong> {user.employee_id}
+            <strong>Employee ID:</strong> {user?.employee_id}
           </div>
           <div>
-            <strong>Admin:</strong> {isAdmin() ? 'Yes' : 'No'}
+            <strong>Admin:</strong> {isAdmin() ? "Yes" : "No"}
           </div>
         </div>
 
@@ -56,20 +80,25 @@ export const PermissionDisplay: React.FC = () => {
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-2">Resource</th>
-                  {actions.map(action => (
-                    <th key={action} className="text-center p-2 capitalize">{action}</th>
+                  {actions.map((action) => (
+                    <th key={action} className="text-center p-2 capitalize">
+                      {action}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {resources.map(resource => (
+                {resources.map((resource) => (
                   <tr key={resource} className="border-b">
                     <td className="p-2 font-medium capitalize">{resource}</td>
-                    {actions.map(action => {
+                    {actions.map((action) => {
                       const hasPerm = hasPermission(resource, action);
                       return (
                         <td key={action} className="text-center p-2">
-                          <Badge variant={hasPerm ? "default" : "secondary"} className="text-xs">
+                          <Badge
+                            variant={hasPerm ? "default" : "secondary"}
+                            className="text-xs"
+                          >
                             {hasPerm ? "✓" : "✗"}
                           </Badge>
                         </td>
@@ -88,7 +117,7 @@ export const PermissionDisplay: React.FC = () => {
         <div>
           <h4 className="font-semibold mb-2">Department Access</h4>
           <div className="flex flex-wrap gap-2">
-            {user.departmentPermissions.map(dept => (
+            {user.departmentPermissions.map((dept) => (
               <Badge key={dept} variant="outline" className="text-xs">
                 {dept}
               </Badge>
@@ -103,22 +132,28 @@ export const PermissionDisplay: React.FC = () => {
           <h4 className="font-semibold mb-2">Quick Permission Tests</h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <strong>Can read visits:</strong> {canRead('visit') ? 'Yes' : 'No'}
+              <strong>Can read visits:</strong>{" "}
+              {canRead("visit") ? "Yes" : "No"}
             </div>
             <div>
-              <strong>Can create patients:</strong> {canCreate('patient') ? 'Yes' : 'No'}
+              <strong>Can create patients:</strong>{" "}
+              {canCreate("patient") ? "Yes" : "No"}
             </div>
             <div>
-              <strong>Can write appointments:</strong> {canWrite('appointment') ? 'Yes' : 'No'}
+              <strong>Can write appointments:</strong>{" "}
+              {canWrite("appointment") ? "Yes" : "No"}
             </div>
             <div>
-              <strong>Can delete billing:</strong> {canDelete('billing') ? 'Yes' : 'No'}
+              <strong>Can delete billing:</strong>{" "}
+              {canDelete("billing") ? "Yes" : "No"}
             </div>
             <div>
-              <strong>Emergency department access:</strong> {isInDepartment('emergency') ? 'Yes' : 'No'}
+              <strong>Emergency department access:</strong>{" "}
+              {isInDepartment("emergency") ? "Yes" : "No"}
             </div>
             <div>
-              <strong>Cardiology department access:</strong> {isInDepartment('cardiology') ? 'Yes' : 'No'}
+              <strong>Cardiology department access:</strong>{" "}
+              {isInDepartment("cardiology") ? "Yes" : "No"}
             </div>
           </div>
         </div>
@@ -131,9 +166,11 @@ export const PermissionDisplay: React.FC = () => {
           <div className="space-y-2">
             {user.permissions.map((permission, index) => (
               <div key={index} className="border rounded p-3 text-sm">
-                <div className="font-medium capitalize mb-1">{permission.resource}</div>
+                <div className="font-medium capitalize mb-1">
+                  {permission.resource}
+                </div>
                 <div className="flex flex-wrap gap-1 mb-2">
-                  {permission.actions.map(action => (
+                  {permission.actions.map((action) => (
                     <Badge key={action} variant="secondary" className="text-xs">
                       {action}
                     </Badge>
@@ -141,7 +178,8 @@ export const PermissionDisplay: React.FC = () => {
                 </div>
                 {permission.attributes.department && (
                   <div className="text-xs text-muted-foreground">
-                    <strong>Departments:</strong> {permission.attributes.department.join(', ')}
+                    <strong>Departments:</strong>{" "}
+                    {permission.attributes.department.join(", ")}
                   </div>
                 )}
                 {permission.conditions.emergency_access && (
@@ -158,4 +196,4 @@ export const PermissionDisplay: React.FC = () => {
   );
 };
 
-export default PermissionDisplay; 
+export default PermissionDisplay;

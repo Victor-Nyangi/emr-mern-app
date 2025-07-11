@@ -16,9 +16,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut } from "@/lib/utils";
 
 const Profile = () => {
+  const router = useRouter();
+
   const logout = () => {
+    signOut();
+    router.push("/");
     console.log("Logged out");
   };
   return (

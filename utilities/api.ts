@@ -1,9 +1,12 @@
+"use server";
+
 import { LoginPayload, PayloadT } from "@/types/data";
 import { destroyCookie, parseCookies } from "nookies";
 
 import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "./constants";
 import { LOGIN_ENDPOINT, SERVER_URL } from "./endpoints";
 import { toast } from "sonner";
+import { cookies } from "next/headers";
 
 /**
  * Reusable function used to resolve data fetching promise and handle errors
@@ -11,13 +14,15 @@ import { toast } from "sonner";
  * @returns data fetch promise
  */
 export const apiHandler = async (url: string, requiresAuth: boolean = true) => {
-  const token = parseCookies()[ACCESS_TOKEN];
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN)?.value ?? "";
 
-  const authHeaderValue = requiresAuth ? `Token ${token}` : "";
+  const authHeaderValue = requiresAuth ? `Bearer ${token}` : "";
   try {
     const response = await fetch(url, {
       method: "GET",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: authHeaderValue,
@@ -25,7 +30,24 @@ export const apiHandler = async (url: string, requiresAuth: boolean = true) => {
     });
     const data = await response.json();
 
-    handleApiError(response);
+    if (response.status === 401) {
+      toast.error("Unauthorized access", {
+        description: "You are not authorized to access this service.",
+      });
+
+      [ACCESS_TOKEN, USER_ID, EMAIL, NAME].forEach((cookie) =>
+        destroyCookie(null, cookie)
+      );
+    }
+
+    if (!response.ok) {
+      toast.error("Request failed", {
+        description: `Failed to fetch data: ${response?.status} ${response?.statusText}`,
+      });
+      throw new Error(
+        `Failed to fetch data: ${response?.status} ${response?.statusText}`
+      );
+    }
 
     return data;
   } catch (error: any) {
@@ -51,6 +73,7 @@ export const postHandler = async (
     const response = await fetch(url, {
       method: method,
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: authHeaderValue,
@@ -59,35 +82,26 @@ export const postHandler = async (
     });
     const data = await response.json();
 
-    handleApiError(response);
+    if (response.status === 401) {
+      toast.error("Unauthorized access", {
+        description: "You are not authorized to access this service.",
+      });
+    }
 
+    if (!response.ok) {
+      toast.error("Request failed", {
+        description: `Failed to fetch data: ${response?.status} ${response?.statusText}`,
+      });
+      throw new Error(
+        `Failed to fetch data: ${response?.status} ${response?.statusText}`
+      );
+    }
     return data;
   } catch (error: any) {
     throw error;
   }
 };
-/**
- * Function that handles api errors
- * @param response Api response
- */
-export const handleApiError = (response: any) => {
-  if (response.status === 401) {
-    toast.error("Unauthorized access", {
-      description: "You are not authorized to access this service.",
-    });
 
-    signOut();
-  }
-
-  if (!response.ok) {
-    toast.error("Request failed", {
-      description: `Failed to fetch data: ${response?.status} ${response?.statusText}`,
-    });
-    throw new Error(
-      `Failed to fetch data: ${response?.status} ${response?.statusText}`
-    );
-  }
-};
 /**
  * AUTH ENDPOINTS
  */
@@ -158,16 +172,4 @@ export const postData = async (
   } catch (error) {
     return {};
   }
-};
-
-/**
- * Function to logout user
- */
-export const signOut = () => {
-  [ACCESS_TOKEN, USER_ID, EMAIL, NAME].forEach((cookie) =>
-    destroyCookie(null, cookie)
-  );
-  // const router = useRouter();
-
-  // router.push("/");
 };

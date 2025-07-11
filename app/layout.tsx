@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ApolloClientProvider } from "@/wrappers/apollo-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,10 +37,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextTopLoader color="#BC2127" />
-          <main>{children}</main>
-          <Toaster />
-        </ThemeProvider>{" "}
+          <ApolloClientProvider>
+            <NextTopLoader color="#BC2127" />
+            <main>{children}</main>
+            <Toaster />
+          </ApolloClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
