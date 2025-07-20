@@ -5,7 +5,6 @@ export default function Page() {
     x: ["users.state"],
     y: ["measures"],
     fillMissingDates: true,
-    joinDateRange: false,
   };
 
   const query = {

@@ -14,7 +14,6 @@ export default function Page() {
     x: ["users.state"],
     y: ["measures"],
     fillMissingDates: true,
-    joinDateRange: false,
   };
 
   return (
@@ -24,7 +23,7 @@ export default function Page() {
         chartType="line"
         useWebSockets={false}
         useSubscription={false}
-        pivotConfig={JSON.stringify(defaultPivot)}
+        pivotConfig={defaultPivot}
       />
     </>
   );
