@@ -34,7 +34,7 @@ export function NotificationsDialog({ className, ...props }: CardProps) {
   return (
     <Card className={cn("w-[380px]", className)} {...props}>
       <CardHeader>
-        <CardTitle>Notifications</CardTitle>
+        <CardTitle>Conversations</CardTitle>
         <CardDescription>You have 3 unread messages.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">

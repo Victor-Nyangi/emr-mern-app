@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { SendHorizonal } from "lucide-react";
+import { ArrowUpIcon, SendHorizonal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ASK_AI_ENDPOINT, SERVER_URL } from "@/utilities/endpoints";
-import { postData } from "@/utilities/api";
 import { useAuthStore } from "@/lib/auth-store";
+import { ChatForm } from "@/components/engagement/ai-chat-form";
+import { AutoResizeTextarea } from "@/components/autoresize-textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 /**
  * AskAiChat component allows users to ask questions about medications or medical terms.
@@ -16,6 +22,22 @@ interface Message {
   role: string;
   content: string;
 }
+
+const header = (
+  <header className="m-auto flex max-w-96 py-6 flex-col gap-5 text-center">
+    <h1 className="text-2xl font-semibold leading-none tracking-tight">
+      Life of Health AI
+    </h1>
+    <p className="text-muted-foreground text-sm">
+      This is an AI chatbot that will guide you and offer any support you need
+      interacting with our platform.
+    </p>
+    <p className="text-muted-foreground text-sm">
+      Send a message to get started.
+    </p>
+  </header>
+);
+
 const AskAiChat = () => {
   const { token } = useAuthStore();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -32,7 +54,7 @@ const AskAiChat = () => {
 
     try {
       const payload = { question: input };
-      
+
       const authHeaderValue = `Bearer ${token}`;
 
       const res = await fetch(SERVER_URL + ASK_AI_ENDPOINT, {
@@ -63,40 +85,50 @@ const AskAiChat = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto border rounded-2xl shadow-md p-4 bg-white">
-      <h2 className="text-xl font-semibold mb-3">Ask AI</h2>
-      <div className="h-64 overflow-y-auto border rounded-lg p-3 bg-gray-50 space-y-2 text-sm">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`p-2 rounded-lg ${
-              msg.role === "user"
-                ? "bg-blue-100 text-right ml-auto"
-                : "bg-green-100 mr-auto"
-            } max-w-xs`}
-          >
-            {msg.content}
-          </div>
-        ))}
+    <div className="flex w-full p-4 flex-col items-stretch h-svh max-h-svh">
+      <h2 className="text-xl font-semibold">Ask AI</h2>
+      <div className="overflow-y-auto py-6space-y-2 text-sm">
+        {messages.length ? (
+          <>
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`p-2 rounded-lg ${
+                  msg.role === "user"
+                    ? "bg-blue-100 text-right ml-auto"
+                    : "bg-green-100 mr-auto"
+                } max-w-xs`}
+              >
+                {msg.content}
+              </div>
+            ))}
+          </>
+        ) : (
+          header
+        )}
         {loading && <div className="text-gray-500 italic">Thinking…</div>}
       </div>
-
-      <div className="flex mt-3 gap-2">
-        <Input
-          type="text"
-          placeholder="Ask about a medication or term..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="flex-1 border rounded-lg px-3 py-2 text-sm"
+      <div className="border-input mt-6 bg-background focus-within:ring-ring/10 relative mx-6 mb-6 flex content-center rounded-[16px] border px-3 py-1.5 pr-8 text-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-0">
+        <AutoResizeTextarea
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onChange={(v) => setInput(v)}
+          value={input}
+          placeholder="Ask about a medication or term..."
+          className="placeholder:text-muted-foreground flex-1 bg-transparent focus:outline-none"
         />
-        <Button
-          onClick={handleSend}
-          disabled={loading}
-          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-        >
-          <SendHorizonal size={18} />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={handleSend}
+              variant="ghost"
+              size="sm"
+              className="absolute bottom-1 right-1 size-6 rounded-full"
+            >
+              <ArrowUpIcon size={16} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={12}>Submit</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

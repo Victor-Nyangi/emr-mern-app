@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ApolloClientProvider } from "@/wrappers/apollo-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +40,9 @@ export default function RootLayout({
         >
           <ApolloClientProvider>
             <NextTopLoader color="#BC2127" />
-            <main>{children}</main>
+            <TooltipProvider delayDuration={0}>
+              <main>{children}</main>
+            </TooltipProvider>
             <Toaster />
           </ApolloClientProvider>
         </ThemeProvider>
