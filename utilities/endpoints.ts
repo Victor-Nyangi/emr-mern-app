@@ -32,3 +32,4 @@ export const VISIT_TREATMENT_ENDPOINT = "/visit-treatments/";
 export const VISIT_INVOICE_ENDPOINT = "/visit-invoices/";
 
 export const GRAPHQL_ENDPOINT = "/graphql";
+export const ASK_AI_ENDPOINT = '/ask-ai'
