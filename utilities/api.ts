@@ -68,7 +68,7 @@ export const postHandler = async (
 ) => {
   const token = parseCookies()[ACCESS_TOKEN];
 
-  const authHeaderValue = requiresAuth ? `Token ${token}` : "";
+  const authHeaderValue = requiresAuth ? `Bearer ${token}` : "";
   try {
     const response = await fetch(url, {
       method: method,
