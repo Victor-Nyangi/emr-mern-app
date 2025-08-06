@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
 import { Separator } from "@/components/ui/separator";
+import AddService from "@/components/services/add-service";
 
 export default function NewService() {
   return (
@@ -10,7 +10,7 @@ export default function NewService() {
         <div className="space-between flex items-center space-y-2">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-green-700">
-              Setup Service
+              Add New Service
             </h2>
             <p className="text-sm text-muted-foreground">
               Create a new service
@@ -23,7 +23,8 @@ export default function NewService() {
           </div>
         </div>
         <Separator className="my-4" />
+        <AddService />
       </div>
     </>
   );
-}; 
+} 

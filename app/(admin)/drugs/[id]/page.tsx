@@ -28,7 +28,7 @@ export default async function DrugsDetailPage({
     <div
       className="container mx-auto"
     >
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col p-4">
         <DrugDetailPage drug={drug} />
       </div>
     </div>

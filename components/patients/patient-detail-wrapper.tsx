@@ -1,5 +1,3 @@
-"use client";
-
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { getData } from "@/utilities/api";
 import { PATIENTS_ENDPOINT, VITALS_ENDPOINT } from "@/utilities/endpoints";

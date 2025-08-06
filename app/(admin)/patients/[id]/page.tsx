@@ -6,5 +6,7 @@ export default async function PatientDetailPage({
 }: {
   params: { id: string };
 }) {
-  return <PatientDetailPageWrapper patientId={params.id} />;
+  const res = await params;
+  const id = res?.id;
+  return <PatientDetailPageWrapper patientId={id} />;
 }

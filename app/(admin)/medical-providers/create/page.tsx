@@ -23,7 +23,7 @@ export default async function NewMeidcalProvider() {
           </div>
           <div className="ml-auto">
             <Button asChild>
-              <Link href="/medical_providers">Back</Link>
+              <Link href="/medical-providers">Back</Link>
             </Button>
           </div>
         </div>

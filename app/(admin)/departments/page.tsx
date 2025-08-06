@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import { DEPARTMENTS_ENDPOINT } from "@/utilities/endpoints";
 import { getData } from "@/utilities/api";
@@ -52,14 +52,6 @@ export default async function Page() {
                 <CardFooter className="flex-col items-start gap-1 text-sm">
                   <div className="line-clamp-1 flex gap-2 font-medium">
                     {department?.description}
-                  </div>
-                  <div className="text-muted-foreground">
-                    <Link
-                      className={buttonVariants({ variant: "outline" })}
-                      href={`/departments/${department._id}`}
-                    >
-                      View Department
-                    </Link>
                   </div>
                 </CardFooter>
               </Card>

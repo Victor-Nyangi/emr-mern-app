@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
 import { Separator } from "@/components/ui/separator";
+import AddDepartment from "@/components/departments/add-department";
 
 export default function NewDepartment() {
   return (
@@ -10,7 +10,7 @@ export default function NewDepartment() {
         <div className="space-between flex items-center space-y-2">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-teal-700">
-              Setup Department
+              Add New Department
             </h2>
             <p className="text-sm text-muted-foreground">
               Create a new department
@@ -23,7 +23,8 @@ export default function NewDepartment() {
           </div>
         </div>
         <Separator className="my-4" />
+        <AddDepartment />
       </div>
     </>
   );
-}; 
+} 
