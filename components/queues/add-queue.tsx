@@ -89,7 +89,6 @@ const defaultValues: Partial<queueFormValues> = {
 };
 
 const AddQueue = ({ departments, medicalProviders, queue }: Props) => {
-  console.log(queue, "queue");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 

@@ -1,19 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DRUGS_ENDPOINT } from "@/utilities/endpoints";
 import { postData } from "@/utilities/api";
@@ -22,10 +14,14 @@ import { format } from "date-fns/format";
 import { toast } from "sonner";
 import CustomFormField from "../forms/input";
 import CustomDateField from "../forms/date-picker";
+import { Drug } from "@/types/data";
 
 const drugFormSchema = z.object({
   name: z.string().min(2, "Drug name must be at least 2 characters.").max(100),
-  description: z.string().min(10, "Description must be at least 10 characters.").max(500),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters.")
+    .max(500),
   manufacter_date: z.date({
     required_error: "Manufacture date is required.",
   }),
@@ -43,7 +39,11 @@ const defaultValues: Partial<DrugFormValues> = {
   expiry_date: undefined,
 };
 
-const AddDrug = () => {
+type Props = {
+  drug?: Drug;
+};
+
+const AddDrug = ({ drug }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -65,7 +65,7 @@ const AddDrug = () => {
         "yyyy-MM-dd HH:mm:ss.SSSSSS"
       ),
     };
-    
+
     try {
       const response = await postData(DRUGS_ENDPOINT, payload);
       if (response?._id) {
@@ -76,7 +76,7 @@ const AddDrug = () => {
           description: "Error in submitting request! Please try again.",
         });
       }
-      form.reset();
+      form.reset(defaultValues);
     } catch (error) {
       toast.error("Submission Error", {
         description: (error as Error)?.message || "An error occurred.",
@@ -85,6 +85,22 @@ const AddDrug = () => {
       setIsLoading(false);
     }
   };
+
+  // ✅ Populate form values based on queue or default values
+  useEffect(() => {
+    if (drug) {
+      form.reset({
+        name: drug.name || "",
+        description: drug.description || "",
+        manufacter_date: drug.manufacter_date
+          ? new Date(drug.manufacter_date)
+          : undefined,
+        expiry_date: drug.expiry_date ? new Date(drug.expiry_date) : undefined,
+      });
+    } else {
+      form.reset(defaultValues);
+    }
+  }, [drug, form]);
 
   return (
     <>
@@ -122,7 +138,7 @@ const AddDrug = () => {
 
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Add Drug
+            {drug ? "Save" : "Add drug"}
           </Button>
         </form>
       </Form>
@@ -130,4 +146,4 @@ const AddDrug = () => {
   );
 };
 
-export default AddDrug; 
+export default AddDrug;

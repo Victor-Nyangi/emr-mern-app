@@ -17,7 +17,6 @@ import {
   User,
   X,
   Printer,
-  Edit,
   ChevronRight,
   Loader2,
 } from "lucide-react";
