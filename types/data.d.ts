@@ -129,10 +129,9 @@ export type BaseQueue = {
 };
 export interface Queue extends BaseQueue {
   priority: string;
-  status: number;
-  assignedTo: string;
+  status: string;
   serviceStartTime: Date;
-  serviceStartTime: Date;
+  serviceEndTime: Date;
   notes: string;
   createdAt: Date;
   updatedAt: Date;

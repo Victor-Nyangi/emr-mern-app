@@ -27,6 +27,7 @@ type Props = {
   drug: any;
 };
 export default function DrugDetailPage({ drug }: Props) {
+  console.log(drug, 'drug');
   const [showAlert, setShowAlert] = useState(false);
 
   // Define sections for the detail page
