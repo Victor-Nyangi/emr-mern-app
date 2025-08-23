@@ -8,6 +8,7 @@ import { List } from "@/components/shared/List";
 import { columns as visitColumns } from "@/components/visits/columns";
 import { CanReadVisit, CanCreateVisit, AdminOnly } from "@/components/auth/PermissionGuard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import StartVisit from "@/components/visits/start-visit";
 
 export default async function Page() {
   const visits = await getData(VISITS_ENDPOINT);
@@ -25,10 +26,11 @@ export default async function Page() {
           <div className="ml-auto">
             <CanCreateVisit>
               <Button asChild variant="teal">
-                <Link href="/visits/create">
+                <StartVisit fromVisitsPage={true} />
+                {/* <Link href="/visits/create">
                   <PlusCircleIcon className="mr-2 h-4 w-4" />
                   Add Visit
-                </Link>
+                </Link> */}
               </Button>
             </CanCreateVisit>
           </div>

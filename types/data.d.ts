@@ -94,7 +94,8 @@ export interface MedicalProvider {
   first_name: string;
   last_name: string;
   address: string;
-  role: stringl;
+  gender: "MALE" | "FEMALE" | "OTHER" | "N/A";
+  role: string;
   phone_number: string;
   date_of_birth: string;
   email: string;
