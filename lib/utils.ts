@@ -2,7 +2,13 @@ import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns/format";
 import { destroyCookie, setCookie } from "nookies";
 import { twMerge } from "tailwind-merge";
-import { EMAIL, USER_ID, ACCESS_TOKEN, NAME } from "@/utilities/constants";
+import {
+  EMAIL,
+  USER_ID,
+  ACCESS_TOKEN,
+  NAME,
+  SESSION_MAX_AGE_SECONDS,
+} from "@/utilities/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const setCookieWithDefaults = (name: string, value: string) => {
   setCookie(null, name, value, {
-    maxAge: 60 * 60,
+    maxAge: SESSION_MAX_AGE_SECONDS,
     sameSite: "strict",
     path: "/",
   });
