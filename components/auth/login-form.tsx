@@ -4,7 +4,13 @@ import { useState } from "react";
 import { LoginPayload } from "@/types/data";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
-import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "@utilities/constants";
+import {
+  ACCESS_TOKEN,
+  EMAIL,
+  NAME,
+  USER_ID,
+  SESSION_MAX_AGE_SECONDS,
+} from "@/utilities/constants";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -77,7 +83,7 @@ const LoginForm = ({
         // Set cookies with options to allow sending to backend (cross-site, secure, SameSite=None)
         Object.entries(userData).forEach(([key, value]) =>
           setCookie(null, key, value, {
-            maxAge: 60 * 60, // 1 hour
+            maxAge: SESSION_MAX_AGE_SECONDS, // matches the backend token TTL
             path: '/',
             secure: process.env.NODE_ENV === 'production',      // Not using HTTPS locally
             sameSite: 'lax',    // 'lax' is more permissive for local dev
@@ -187,11 +193,8 @@ const LoginForm = ({
                 Sign in
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="underline underline-offset-4">
-                Sign up
-              </Link>
+            <div className="mt-4 text-center text-sm text-muted-foreground">
+              Need an account? Contact your system administrator.
             </div>
           </form>
         </CardContent>

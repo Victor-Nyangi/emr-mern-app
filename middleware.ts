@@ -21,16 +21,16 @@ export default function middleware(request: NextRequest) {
 
   const authToken = request.cookies.get(ACCESS_TOKEN)?.value || "";
 
-  // If user is authenticated and trying to access login or register, redirect to /home
+  // If user is authenticated and trying to access login, redirect to /home
   if (
     authToken &&
-    (pathname === "/" || pathname.startsWith("/register") || pathname.startsWith("/login"))
+    (pathname === "/" || pathname.startsWith("/login"))
   ) {
     return NextResponse.redirect(new URL(`/home`, request.url));
   }
 
-  // If user is unauthenticated and trying to access a protected route (not /, /login, or /register), redirect to /
-  const isAuthPage = pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/register");
+  // If user is unauthenticated and trying to access a protected route (not / or /login), redirect to /
+  const isAuthPage = pathname === "/" || pathname.startsWith("/login");
   if (!authToken && !isAuthPage) {
     return NextResponse.redirect(new URL(`/`, request.url));
   }
