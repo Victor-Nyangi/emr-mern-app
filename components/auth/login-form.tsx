@@ -58,7 +58,11 @@ const LoginForm = ({
       
       // check if unsuccessful Login
       if (!data?.token) {
-        const errorMsg = data?.error_description || "There was a problem with your request.";
+        // The API returns errors as { message }. This previously read
+        // error_description, a field the backend never sends, so every
+        // failed login showed the generic fallback instead of the reason.
+        const errorMsg =
+          data?.message || "There was a problem with your request.";
         toast.error("Login Error", {
           description: errorMsg,
         });

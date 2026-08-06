@@ -78,12 +78,36 @@ describe('API Utilities', () => {
       expect(result).toEqual(mockResponse)
     })
 
-    test('should return empty results on error', async () => {
+    test('should propagate network errors instead of returning an empty list', async () => {
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
-      const result = await getData('/test-endpoint')
+      // Returning { results: [] } here rendered a backend outage as an
+      // empty table with no indication anything had gone wrong.
+      await expect(getData('/test-endpoint')).rejects.toThrow('Network error')
+    })
 
-      expect(result).toEqual({ results: [] })
+    test('should surface the server error message on a non-OK response', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: jest.fn().mockResolvedValueOnce({ message: 'database is on fire' }),
+      })
+
+      await expect(getData('/test-endpoint')).rejects.toThrow(
+        'database is on fire'
+      )
+    })
+
+    test('should still error usefully when the body is not JSON', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 502,
+        statusText: 'Bad Gateway',
+        json: jest.fn().mockRejectedValueOnce(new SyntaxError('Unexpected token <')),
+      })
+
+      await expect(getData('/test-endpoint')).rejects.toThrow('502')
     })
   })
 
@@ -107,7 +131,10 @@ describe('API Utilities', () => {
           credentials: 'include',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            Authorization: 'Bearer undefined',
+            // Was 'Bearer undefined': postHandler read the cookie with
+            // nookies, which returns {} when it runs as a Server Action,
+            // so every authenticated mutation went out unauthenticated.
+            Authorization: 'Bearer test-token',
           }),
           body: JSON.stringify(payload),
         })
@@ -135,12 +162,27 @@ describe('API Utilities', () => {
       )
     })
 
-    test('should return empty object on error', async () => {
+    test('should propagate errors instead of returning an empty object', async () => {
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
-      const result = await postData('/test-endpoint', { test: 'data' })
+      // Returning {} made a failed save indistinguishable from a
+      // successful one that happened to return nothing.
+      await expect(
+        postData('/test-endpoint', { test: 'data' })
+      ).rejects.toThrow('Network error')
+    })
 
-      expect(result).toEqual({})
+    test('should surface the server error message so the form can show it', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json: jest.fn().mockResolvedValueOnce({ message: 'email already exists' }),
+      })
+
+      await expect(
+        postData('/test-endpoint', { test: 'data' })
+      ).rejects.toThrow('email already exists')
     })
   })
 }) 
