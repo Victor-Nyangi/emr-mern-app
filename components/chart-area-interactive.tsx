@@ -33,7 +33,6 @@ import { chartData } from "@/lib/chartData"
 export const description = "An interactive area chart"
 
 
-
 const chartConfig = {
   visitors: {
     label: "Visitors",

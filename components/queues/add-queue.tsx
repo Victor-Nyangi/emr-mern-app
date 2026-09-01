@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
-import { Control, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -18,28 +17,25 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { QUEUES_ENDPOINT } from "@/utilities/endpoints";
 import { postData } from "@/utilities/api";
-import { Calendar1Icon, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 import { format } from "date-fns/format";
 import { toast } from "sonner";
 
 import { Textarea } from "../ui/textarea";
-import { Department, MedicalProvider } from "@/types/data";
+import { Department, MedicalProvider, Queue } from "@/types/data";
 import FormSelectPopover from "../forms/select";
 import CustomFormField from "../forms/input";
 import CustomDateField from "../forms/date-picker";
 
-type Props = { medicalProviders: MedicalProvider[]; departments: Department[] };
+type Props = {
+  medicalProviders: MedicalProvider[];
+  departments: Department[];
+  queue?: Queue;
+};
 
 const statuses = [
   { label: "Waiting", value: "WAITING" },
@@ -92,7 +88,7 @@ const defaultValues: Partial<queueFormValues> = {
   notes: "",
 };
 
-const AddQueue = ({ departments, medicalProviders }: Props) => {
+const AddQueue = ({ departments, medicalProviders, queue }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -123,7 +119,7 @@ const AddQueue = ({ departments, medicalProviders }: Props) => {
           description: "Error in submitting request! Please try again.",
         });
       }
-      form.reset();
+      form.reset(defaultValues);
     } catch (error) {
       toast.error("Submission Error", {
         description: (error as Error)?.message || "An error occurred.",
@@ -132,6 +128,29 @@ const AddQueue = ({ departments, medicalProviders }: Props) => {
       setIsLoading(false);
     }
   };
+
+  // ✅ Populate form values based on queue or default values
+  useEffect(() => {
+    if (queue) {
+      form.reset({
+        name: queue.name || "",
+        departmentId: queue.departmentId?._id || "",
+        assignedTo: queue.assignedTo?._id || "",
+        status: queue.status || "WAITING",
+        serviceStartTime: queue.serviceStartTime
+          ? new Date(queue.serviceStartTime)
+          : undefined,
+        serviceEndTime: queue.serviceEndTime
+          ? new Date(queue.serviceEndTime)
+          : undefined,
+        priority: queue.priority || "LOW",
+        notes: queue.notes || "",
+      });
+    } else {
+      form.reset(defaultValues);
+    }
+  }, [queue, form]);
+
   return (
     <>
       <Form {...form}>
@@ -226,7 +245,7 @@ const AddQueue = ({ departments, medicalProviders }: Props) => {
 
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Register queue
+            {queue ? "Edit" : "Register"} queue
           </Button>
         </form>
       </Form>{" "}

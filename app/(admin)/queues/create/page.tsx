@@ -10,9 +10,14 @@ import {
 import AddQueue from "@/components/queues/add-queue";
 
 export default async function NewQueue() {
-  const departments = await getData(DEPARTMENTS_ENDPOINT);
-
-  const medicalProviders = await getData(MEDICAL_PROVIDERS_ENDPOINT);
+  const departmentsResponse = await getData(DEPARTMENTS_ENDPOINT);
+  const medicalProvidersResponse = await getData(MEDICAL_PROVIDERS_ENDPOINT);
+  const departments = Array.isArray(departmentsResponse)
+    ? departmentsResponse
+    : departmentsResponse?.results ?? [];
+  const medicalProviders = Array.isArray(medicalProvidersResponse)
+    ? medicalProvidersResponse
+    : medicalProvidersResponse?.results ?? [];
 
   return (
     <>

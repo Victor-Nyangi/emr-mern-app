@@ -84,10 +84,6 @@ export const columns: ColumnDef<Financial>[] = [
             >
               Copy Account ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/financial/${financial._id}`}>View Account</Link>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

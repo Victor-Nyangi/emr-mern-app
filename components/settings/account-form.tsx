@@ -215,7 +215,7 @@ export function AccountForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Update account</Button>
+        <Button type="submit" variant="teal">Update account</Button>
       </form>
     </Form>
   );

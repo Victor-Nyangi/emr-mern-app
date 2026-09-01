@@ -4,7 +4,13 @@ import { useState } from "react";
 import { LoginPayload } from "@/types/data";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
-import { ACCESS_TOKEN, EMAIL, NAME, USER_ID } from "@utilities/constants";
+import {
+  ACCESS_TOKEN,
+  EMAIL,
+  NAME,
+  USER_ID,
+  SESSION_MAX_AGE_SECONDS,
+} from "@/utilities/constants";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -18,19 +24,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { setCookieWithDefaults } from "@/lib/utils";
+import { setCookie } from "nookies";
 import { loginSubmitHandler } from "@/utilities/api";
 import { toast } from "sonner";
+import { useAuthStore } from "@/lib/auth-store";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const [userDetails, setUserDetails] = useState<LoginPayload>({
-    email: "gichuivictor@gmail.com",
-    password: "gichuivictor@gmail.com",
+    email: "admin@emr.com",
+    password: "admin123",
   });
+  // email: "gichuivictor@gmail.com",
+  // password: "gichuivictor@gmail.com",
   const router = useRouter();
+  const { login, setLoading: setAuthLoading, setError } = useAuthStore();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,23 +51,32 @@ const LoginForm = ({
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e?.preventDefault();
     setIsLoading(true);
+    setAuthLoading(true);
 
     try {
-    const data = await loginSubmitHandler({ ...userDetails });
+      const data = await loginSubmitHandler({ ...userDetails });
+      
       // check if unsuccessful Login
-
       if (!data?.token) {
+        // The API returns errors as { message }. This previously read
+        // error_description, a field the backend never sends, so every
+        // failed login showed the generic fallback instead of the reason.
+        const errorMsg =
+          data?.message || "There was a problem with your request.";
         toast.error("Login Error", {
-          description:
-            data?.error_description || "There was a problem with your request.",
+          description: errorMsg,
         });
-
+        setError(errorMsg);
         setUserDetails((prev) => ({
           ...prev,
           email: "",
           password: "",
         }));
       } else {
+        // Store user data in Zustand store
+        login(data);
+
+        // Also store in cookies for backward compatibility
         const userData = {
           [ACCESS_TOKEN]: data?.token,
           [USER_ID]: data?._id,
@@ -65,8 +84,14 @@ const LoginForm = ({
           [NAME]: data?.name,
         };
 
+        // Set cookies with options to allow sending to backend (cross-site, secure, SameSite=None)
         Object.entries(userData).forEach(([key, value]) =>
-          setCookieWithDefaults(key, value)
+          setCookie(null, key, value, {
+            maxAge: SESSION_MAX_AGE_SECONDS, // matches the backend token TTL
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',      // Not using HTTPS locally
+            sameSite: 'lax',    // 'lax' is more permissive for local dev
+          })
         );
 
         toast.promise(data, {
@@ -80,11 +105,14 @@ const LoginForm = ({
         router.push(`/home`);
       }
     } catch (error) {
+      const errorMsg = "An unexpected error occurred. Please try again later.";
       toast.error("Login Error", {
-        description: "An unexpected error occurred. Please try again later.",
+        description: errorMsg,
       });
+      setError(errorMsg);
     } finally {
       setIsLoading(false);
+      setAuthLoading(false);
     }
   };
 
@@ -169,11 +197,8 @@ const LoginForm = ({
                 Sign in
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="underline underline-offset-4">
-                Sign up
-              </Link>
+            <div className="mt-4 text-center text-sm text-muted-foreground">
+              Need an account? Contact your system administrator.
             </div>
           </form>
         </CardContent>

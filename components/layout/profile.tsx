@@ -16,9 +16,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signOut } from "@/lib/utils";
 
 const Profile = () => {
+  const router = useRouter();
+
   const logout = () => {
+    signOut();
+    router.push("/");
     console.log("Logged out");
   };
   return (
@@ -37,7 +43,7 @@ const Profile = () => {
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              Billing
+              <Link href="/billing">Billing</Link>
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
@@ -47,7 +53,10 @@ const Profile = () => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>Team</DropdownMenuItem>
+            <Link href="/conversations">
+              Conversations
+              <DropdownMenuItem>Conversation</DropdownMenuItem>
+            </Link>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -60,7 +69,7 @@ const Profile = () => {
               </DropdownMenuPortal>
             </DropdownMenuSub>
             <DropdownMenuItem>
-              New Team
+              New Conversation
               <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>

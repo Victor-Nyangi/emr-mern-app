@@ -108,7 +108,7 @@ const { data: appointments = [], isPending: loadingAppointments } = useQuery<App
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Message
                 </Button>
-                <StartVisit />
+                <StartVisit fromVisitsPage={false}/>
               </div>
             </CardHeader>
             <CardContent>

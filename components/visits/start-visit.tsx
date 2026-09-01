@@ -28,13 +28,20 @@ import { useParams } from "next/navigation";
 import { paymentMethods } from "@/lib/data";
 import { useEffect, useState } from "react";
 import { getData, postData } from "@/utilities/api";
-import { QUEUES_ENDPOINT, VISITS_ENDPOINT } from "@/utilities/endpoints";
-import { Queue } from "@/types/data";
+import {
+  PATIENTS_ENDPOINT,
+  QUEUES_ENDPOINT,
+  VISITS_ENDPOINT,
+} from "@/utilities/endpoints";
+import { Patient, Queue } from "@/types/data";
 import FormSelectPopover from "../forms/select";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { Checkbox } from "../ui/checkbox";
 
+type Props = {
+  fromVisitsPage: boolean;
+};
 const paymentMethodValues = paymentMethods.map((s) => s.label) as [
   string,
   ...string[]
@@ -44,6 +51,7 @@ const visitFormSchema = z.object({
   payment_method: z.enum(paymentMethodValues, {
     required_error: "You need to select a payment method.",
   }),
+  patient_id: z.string(),
   isFollowUp: z.boolean(),
   currentQueue: z.string().nonempty("Please select a queue"),
 });
@@ -56,8 +64,9 @@ const defaultValues: Partial<visitFormValues> = {
   currentQueue: "",
 };
 
-export default function StartVisit() {
+export default function StartVisit({ fromVisitsPage = false }: Props) {
   const [queues, setQueues] = useState<Queue[]>([]);
+  const [patientsData, setPatients] = useState<Patient[]>([]);
   const [fetchingData, setFetchingData] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,7 +79,11 @@ export default function StartVisit() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const queueData = await getData(QUEUES_ENDPOINT);
+      const [queueData, patients] = await Promise.all([
+        getData(QUEUES_ENDPOINT),
+        getData(PATIENTS_ENDPOINT),
+      ]);
+      setPatients(patients || []);
       setQueues(queueData || []);
     };
     fetchData().then((data) => {
@@ -79,9 +92,10 @@ export default function StartVisit() {
   }, []);
 
   const onSubmit = async (data: visitFormValues) => {
+    const patientIdVal = fromVisitsPage ? data.patient_id : patientId;
     const payload = {
       ...data,
-      patient_id: patientId,
+      patient_id: patientIdVal || "",
       status: "ARRIVED",
     };
     try {
@@ -118,6 +132,23 @@ export default function StartVisit() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 p-4"
           >
+            {fetchingData ? (
+              <Skeleton className="h-4 w-[250px]" />
+            ) : (
+              <>
+                {fromVisitsPage && (
+                  <FormSelectPopover
+                    control={form.control}
+                    name="patient_id"
+                    label="Patient"
+                    placeholder="Select patient"
+                    items={patientsData}
+                    valueKey="_id"
+                    displayValue={(p) => `${p.first_name} ${p.last_name}`}
+                  />
+                )}
+              </>
+            )}
             <FormSelectPopover
               control={form.control}
               name="payment_method"
@@ -155,7 +186,9 @@ export default function StartVisit() {
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel htmlFor="isFollowUp">Is this a follow up visit?</FormLabel>
+                    <FormLabel htmlFor="isFollowUp">
+                      Is this a follow up visit?
+                    </FormLabel>
                   </div>
                 </FormItem>
               )}

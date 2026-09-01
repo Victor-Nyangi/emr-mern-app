@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDateFn } from "@/lib/utils";
 
 export default async function Page() {
   const services = await getData(SERVICES_ENDPOINT);
