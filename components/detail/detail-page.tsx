@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 export interface DetailSection {
   title: string;
@@ -51,6 +52,7 @@ export interface DetailAction {
 }
 
 export interface DetailPageProps {
+  id: string;
   name: string;
   subtitle?: string;
   status?: string;
@@ -68,6 +70,7 @@ export interface DetailPageProps {
 }
 
 export function DetailPage({
+  id,
   name,
   subtitle,
   status,

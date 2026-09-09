@@ -22,12 +22,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 
 type Props = {
   drug: any;
 };
 export default function DrugDetailPage({ drug }: Props) {
+  console.log(drug, "drug detail page");
   const [showAlert, setShowAlert] = useState(false);
+  const router = useRouter();
 
   // Define sections for the detail page
   const sections: DetailSection[] = [
@@ -35,29 +38,35 @@ export default function DrugDetailPage({ drug }: Props) {
       title: "General Information",
       content: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Generic Name
-            </h3>
-            <p>{drug.genericName}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Brand Names
-            </h3>
-            <p>{drug.brandNames.join(", ")}</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Category
-            </h3>
-            <p>{drug.category}</p>
-          </div>
+          {drug?.genericName && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Generic Name
+              </h3>
+              <p>{drug.genericName}</p>
+            </div>
+          )}
+          {drug?.brandNames?.length && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Brand Names
+              </h3>
+              <p>{drug.brandNames.join(", ")}</p>
+            </div>
+          )}
+          {drug?.category && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Category
+              </h3>
+              <p>{drug.category}</p>
+            </div>
+          )}
           <div>
             <h3 className="text-sm font-medium text-muted-foreground">
               Drug ID
             </h3>
-            <p>{drug.id}</p>
+            <p>{drug._id}</p>
           </div>
         </div>
       ),
@@ -170,6 +179,7 @@ export default function DrugDetailPage({ drug }: Props) {
       )}
 
       <DetailPage
+        id={drug._id}
         name={drug.name}
         subtitle={drug.category}
         status={drug.status}
@@ -206,8 +216,7 @@ export default function DrugDetailPage({ drug }: Props) {
           },
         ]}
         onEdit={() => {
-          setShowAlert(true);
-          setTimeout(() => setShowAlert(false), 3000);
+          router.push(`/drugs/${drug._id}/edit`);
         }}
         onDelete={() => {
           setShowAlert(true);

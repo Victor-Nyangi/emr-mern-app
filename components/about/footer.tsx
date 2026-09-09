@@ -7,9 +7,7 @@ const FooterSection = () => {
         <div className="grid row-gap-10 mb-8 lg:grid-cols-6">
           <div className="grid grid-cols-2 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-4">
             <div>
-              <p className="font-medium tracking-wide text-gray-300">
-                Visits
-              </p>
+              <p className="font-medium tracking-wide text-gray-300">Visits</p>
               <ul className="mt-2 space-y-2">
                 <li>
                   <a
@@ -46,7 +44,9 @@ const FooterSection = () => {
               </ul>
             </div>
             <div>
-              <p className="font-medium tracking-wide text-gray-300">Appointments</p>
+              <p className="font-medium tracking-wide text-gray-300">
+                Appointments
+              </p>
               <ul className="mt-2 space-y-2">
                 <li>
                   <a
@@ -91,7 +91,9 @@ const FooterSection = () => {
               </ul>
             </div>
             <div>
-              <p className="font-medium tracking-wide text-gray-300">Clinical</p>
+              <p className="font-medium tracking-wide text-gray-300">
+                Clinical
+              </p>
               <ul className="mt-2 space-y-2">
                 <li>
                   <a
@@ -201,7 +203,8 @@ const FooterSection = () => {
         </div>
         <div className="flex flex-col justify-between pt-5 pb-10 border-t border-gray-800 sm:flex-row">
           <p className="text-sm text-gray-500">
-            © Copyright 2020 Life of Us. All rights reserved.
+            © Copyright {new Date().getFullYear()} Life of Us. All rights
+            reserved.
           </p>
           <div className="flex items-center mt-4 space-x-4 sm:mt-0">
             <a

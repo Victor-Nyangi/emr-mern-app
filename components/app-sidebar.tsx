@@ -152,12 +152,12 @@ const data = {
     },
     {
       title: "Get Help",
-      url: "#",
+      url: "/support",
       icon: IconHelp,
     },
     {
       title: "Search",
-      url: "#",
+      url: "/ask-ai",
       icon: IconSearch,
     },
   ],

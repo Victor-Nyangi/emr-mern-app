@@ -292,3 +292,26 @@ export default function Calendar() {
 | **Patient Data Forms**                   | `react-query` + optimistic mutation |
 | **Background refresh (e.g., vitals)**    | `react-query` + polling             |
 | **Admin or Audit Dashboards**            | SSR + hydration with `dehydrate()`  |
+
+
+## Authentication
+Attribute-Based Access Control (ABAC) system for your EMR application. Here's what has been created:
+
+### Frontend Implementation
+
+Zustand Auth Store - Manages authentication state and provides permission checking methods
+Permission Guards - React components for conditional rendering based on permissions
+Updated Login Form - Now stores user permissions in Zustand on login
+Permission Display - Debug component showing current user permissions
+Updated Visit Page - Demonstrates permission-based UI rendering
+
+### Key Features
+
+Role-based access with 6 predefined roles
+Department restrictions limiting access to specific departments
+Attribute-based conditions including patient status, visit type, data sensitivity
+Time restrictions for certain operations
+Emergency access controls for critical situations
+Context-aware permissions that consider multiple factors
+Frontend permission guards for UI-level access control
+Backend middleware for route-level protection 

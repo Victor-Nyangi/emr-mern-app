@@ -1,4 +1,5 @@
 import FooterSection from "@/components/about/footer";
+import WorkSection from "@/components/about/work-section";
 import ThemeChanger from "@/components/layout/theme-toggle";
 import Logo from "@/components/shared/logo";
 import StatementCard from "@/components/statement-card";
@@ -9,29 +10,25 @@ const statements = [
     title: "Patient and Visit Management",
     description:
       "Easily manage patient records, medical history, and visit timelines from a centralized dashboard.",
-    image:
-      "/images/MainPage.jpg",
+    image: "/images/MainPage.jpg",
   },
   {
     title: "Appointment Scheduling",
     description:
       "Enable seamless scheduling, rescheduling, and reminders for patient appointments with built-in calendar integration.",
-    image:
-      "/images/calendar.jpg",
+    image: "/images/calendar.jpg",
   },
   {
     title: "Clinical Documentation",
     description:
       "Record clinical notes, track symptoms, and attach lab results and audio notes to individual patient records.",
-    image:
-      "images/doctor.jpg",
+    image: "images/doctor.jpg",
   },
   {
     title: "Analytics and Insights",
     description:
       "Get real-time data insights into patient outcomes, visit frequency, and provider efficiency to inform decisions.",
-    image:
-      "/images/healthcare.png",
+    image: "/images/healthcare.png",
   },
 ];
 
@@ -51,7 +48,7 @@ export default function About() {
         <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-2">
             <div className="flex flex-col justify-center md:pr-8 xl:pr-0 lg:max-w-lg">
-              <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-teal-accent-400">
+              <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-teal-100">
                 <Logo />
               </div>
               <div className="max-w-xl mb-6">
@@ -59,9 +56,7 @@ export default function About() {
                   Let us handle your
                   <br className="hidden md:block mt-1" />
                   health care{" "}
-                  <span className="inline-block text-deep-purple-accent-400">
-                    processes
-                  </span>
+                  <span className="inline-block text-teal-600">processes</span>
                 </h2>
                 <p className="text-base text-gray-700 dark:text-gray-200 md:text-lg">
                   Yet, as Deleuze may suggest, the true potency lies not in the
@@ -76,7 +71,7 @@ export default function About() {
                 <Link
                   href="/"
                   aria-label=""
-                  className="inline-flex items-center font-semibold transition-colors duration-200 text-deep-purple-accent-400 hover:text-deep-purple-800"
+                  className="inline-flex items-center font-semibold transition-colors duration-200 text-teal-600 hover:text-green-700"
                 >
                   Join Us
                   <svg
@@ -121,7 +116,7 @@ export default function About() {
                 <br className="hidden md:block" />
                 access to quality health care.
               </span>
-              <div className="h-1 ml-auto duration-300 origin-left transform bg-blue-700 scale-x-30 group-hover:scale-x-100" />
+              <div className="h-1 ml-auto duration-300 origin-left transform bg-green-700 scale-x-30 group-hover:scale-x-100" />
             </h2>
             <p className="text-gray-700 dark:text-gray-200 lg:text-sm lg:max-w-md">
               The EMR prototype is not merely a tool," one might argue, "but a
@@ -138,6 +133,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      <WorkSection />
       <FooterSection />
     </main>
   );

@@ -5,7 +5,6 @@ import { columns as policyColumns } from "@/components/insurance/policy/columns"
 
 export default async function Page() {
   const policies = await getData(POLICY_ENDPOINT);
-
   return (
     <>
       <div className="h-full flex-1 flex-col space-y-8 p-8 md:flex">

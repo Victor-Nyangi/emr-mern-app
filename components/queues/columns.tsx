@@ -112,7 +112,7 @@ export const columns: ColumnDef<Queue>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/queue/${queue._id}`}>Edit Queue</Link>
+              <Link href={`/queues/${queue._id}`}>Edit Queue</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

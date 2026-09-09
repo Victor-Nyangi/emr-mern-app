@@ -90,8 +90,12 @@ export function NavUser({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
+                <Link href="/billing">
+                  <span className="flex gap-2">
+                    <IconCreditCard />
+                    Billing
+                  </span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link href="/notifications">

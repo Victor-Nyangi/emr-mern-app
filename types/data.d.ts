@@ -94,7 +94,8 @@ export interface MedicalProvider {
   first_name: string;
   last_name: string;
   address: string;
-  role: stringl;
+  gender: "MALE" | "FEMALE" | "OTHER" | "N/A";
+  role: string;
   phone_number: string;
   date_of_birth: string;
   email: string;
@@ -129,10 +130,9 @@ export type BaseQueue = {
 };
 export interface Queue extends BaseQueue {
   priority: string;
-  status: number;
-  assignedTo: string;
+  status: string;
   serviceStartTime: Date;
-  serviceStartTime: Date;
+  serviceEndTime: Date;
   notes: string;
   createdAt: Date;
   updatedAt: Date;
