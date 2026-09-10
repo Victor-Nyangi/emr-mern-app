@@ -18,9 +18,28 @@ export type ItemRange = {
   max: number;
 };
 
+export type VitalRange = {
+  low: ItemRange;
+  normal: ItemRange;
+  high: ItemRange;
+};
+
+export type LoincCoding = {
+  system: string;
+  code: string;
+  display: string;
+};
+
+/**
+ * Mirrors the shape served by GET /api/v1/vitals/definitions
+ * (emr-mern-app-backend/src/data/vitalDefinitions.ts) -- that endpoint is
+ * the source of truth; this type just describes what it returns.
+ */
 export type VitalDefinition = {
   name: string;
   label: string;
   unit: string;
-  range: [{ low: ItemRange; normal: ItemRange; high: ItemRange }];
+  range: VitalRange;
+  loinc?: LoincCoding;
+  components?: { name: string; loinc: LoincCoding }[];
 };
