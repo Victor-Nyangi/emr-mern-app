@@ -11,10 +11,10 @@ import { Button } from "../ui/button";
 import AddVitalForm from "./add-vital";
 import { useEffect, useState } from "react";
 import { Vital } from "@/types/data";
-import { VITALS_ENDPOINT } from "@/utilities/endpoints";
+import { VITALS_ENDPOINT, VITAL_DEFINITIONS_ENDPOINT } from "@/utilities/endpoints";
 import { getData } from "@/utilities/api";
 import { classifyVitalsForUI } from "@/lib/vitalClassification";
-import { VitalUIResult } from "@/types/vitals";
+import { VitalDefinition, VitalUIResult } from "@/types/vitals";
 
 const Vitals = ({
   visitId,
@@ -31,10 +31,14 @@ const Vitals = ({
     const fetchData = async () => {
       setFetchingData(true);
       try {
-        const data = await getData(`${VITALS_ENDPOINT}visit/${visitId}`);
+        const [data, definitions]: [Vital, VitalDefinition[]] =
+          await Promise.all([
+            getData(`${VITALS_ENDPOINT}visit/${visitId}`),
+            getData(VITAL_DEFINITIONS_ENDPOINT),
+          ]);
         setVitals(data);
         if (data) {
-          setRefinedVitals(classifyVitalsForUI(data));
+          setRefinedVitals(classifyVitalsForUI(data, definitions));
         }
       } catch (error) {
         console.error("Error fetching data:", error);

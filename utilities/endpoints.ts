@@ -11,6 +11,7 @@ export const DEPARTMENTS_ENDPOINT = "/departments/";
 export const BILLINGS_ENDPOINT = "/billings/";
 export const QUEUES_ENDPOINT = "/queues/";
 export const VITALS_ENDPOINT = "/vitals/";
+export const VITAL_DEFINITIONS_ENDPOINT = "/vitals/definitions";
 export const DRUGS_ENDPOINT = "/drugs/";
 export const MEDICAL_PROVIDERS_ENDPOINT = "/medical-providers/";
 export const PATIENTS_ENDPOINT = "/patients/";

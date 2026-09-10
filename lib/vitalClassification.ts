@@ -7,70 +7,16 @@ import {
   VitalUIResult,
 } from "@/types/vitals";
 
-const vitalDefinitions: VitalDefinition[] = [
-  {
-    name: "blood_pressure",
-    label: "Blood Pressure",
-    unit: "mmHg",
-    range: [
-      {
-        low: { min: 0, max: 89 }, // Hypotension (systolic < 90)
-        normal: { min: 90, max: 119 }, // Normal (systolic 90–119)
-        high: { min: 120, max: 180 }, // Hypertension (systolic ≥ 120)
-      },
-    ],
-  },
-  {
-    name: "pulse_rate",
-    label: "Heart Rate",
-    unit: "bpm",
-    range: [
-      {
-        low: { min: 0, max: 59 }, // Bradycardia (< 60 bpm)
-        normal: { min: 60, max: 100 }, // Normal (60–100 bpm)
-        high: { min: 101, max: 200 }, // Tachycardia (> 100 bpm)
-      },
-    ],
-  },
-  {
-    name: "body_temperature",
-    label: "Temperature",
-    unit: "°F",
-    range: [
-      {
-        low: { min: 90.0, max: 95.9 }, // Hypothermia
-        normal: { min: 96.0, max: 99.5 }, // Normal body temp
-        high: { min: 99.6, max: 106.0 }, // Fever or Hyperthermia
-      },
-    ],
-  },
-  {
-    name: "respiration_rate",
-    label: "Respiratory Rate",
-    unit: "breaths/min",
-    range: [
-      {
-        low: { min: 0, max: 11 }, // Bradypnea (< 12)
-        normal: { min: 12, max: 20 }, // Normal
-        high: { min: 21, max: 40 }, // Tachypnea (> 20)
-      },
-    ],
-  },
-  {
-    name: "weight",
-    label: "Weight",
-    unit: "lbs",
-    range: [
-      {
-        low: { min: 0, max: 90 }, // Underweight for adults
-        normal: { min: 91, max: 200 }, // General adult range
-        high: { min: 201, max: 400 }, // Overweight/obese
-      },
-    ],
-  },
-];
-
-export const classifyVitalsForUI = (vitalData: Vital): VitalUIResult[] => {
+/**
+ * Unit and reference-range knowledge for vital signs now lives server-side
+ * (GET /api/v1/vitals/definitions, emr-mern-app-backend/src/data/vitalDefinitions.ts)
+ * and is the authoritative source. Callers fetch it and pass it in here rather
+ * than this module keeping its own copy.
+ */
+export const classifyVitalsForUI = (
+  vitalData: Vital,
+  vitalDefinitions: VitalDefinition[]
+): VitalUIResult[] => {
   const getColor = (range: RangeLabel): Color => {
     switch (range) {
       case "Low":
@@ -108,7 +54,7 @@ export const classifyVitalsForUI = (vitalData: Vital): VitalUIResult[] => {
       }
     }
 
-    const { low, normal, high } = range[0];
+    const { low, normal, high } = range;
 
     let rangeLabel: RangeLabel = "Unknown";
 
